@@ -44,7 +44,4 @@ public class Card {
 		}
 		return this.value + s;
 	}
-	
  }
-
-

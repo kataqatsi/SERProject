@@ -1,7 +1,6 @@
 
 public class TexasHoldem {
 	public static void main(String[] args) {
-		
 		Deck deck = new Deck();
 		System.out.println("************Newly created deck, unshuffled:\n" + deck.toString());
 		deck.shuffle();
