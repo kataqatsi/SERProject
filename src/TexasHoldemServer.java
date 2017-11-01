@@ -12,10 +12,9 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 public class TexasHoldemServer extends Application implements TexasHoldemConstants{
-	ObjectOutputStream toPlayer1;
-	ObjectInputStream fromPlayer1;
-	ObjectInputStream fromPlayer2;
-	ObjectOutputStream toPlayer2;
+	ObjectOutputStream toPlayer[];
+	ObjectInputStream fromPlayer[];
+	
 	Deck d;
 	Player players[];
 	int numOfPlayers = 0;
@@ -60,6 +59,12 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					log.appendText("Player 2's IP address " +player1.getInetAddress().getHostAddress() + '\n');
 					numOfPlayers++;
 					players = new Player[numOfPlayers];
+					toPlayer = new ObjectOutputStream[numOfPlayers];
+					fromPlayer = new ObjectInputStream[numOfPlayers];
+					
+					
+					toPlayer[0] = players[0].getOut();
+					fromPlayer[1] = players[1].getInput();
 					
 					//Game thread, sends players off into instance of the game
 					new Thread(()->{
