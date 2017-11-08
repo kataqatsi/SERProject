@@ -31,10 +31,19 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private boolean waiting = true;
 	private boolean myTurn = false;
 	private static Player player;
-	private static Player otherPlayer;
 	private boolean gameOver = false;
 	private int time = 20;
 	private Send send;
+	private Table table;
+	private Button btnExit = new Button();
+    private Button btnCheck = new Button();
+    private Button btnCall = new Button();
+    private Button btnRaise = new Button();
+    private Button btnFold = new Button();
+    private Button btnTest = new Button();
+    private Text txtNotify = new Text();
+    private Text txtNotify2 = new Text(); 
+    private Text timer = new Text();
 	
 	public static void main(String[] args) {
 		//Connect to server
@@ -42,222 +51,183 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		//Launch JavaFX Game
 		launch(args);
 	}
-	    public void start(Stage primaryStage) {
-	    
-	    	
-	        primaryStage.setTitle("Texas Hold'em");
-	        Canvas canvas = new Canvas(1231,781);
-	        GraphicsContext gc = canvas.getGraphicsContext2D();
-	        Group root = new Group();
-	        Scene scene = new Scene(root, 1231, 781);
+    
+	public void start(Stage primaryStage) {
+    
+        primaryStage.setTitle("Texas Hold'em");
+        Canvas canvas = new Canvas(1231,781);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        Group root = new Group();
+        Scene scene = new Scene(root, 1231, 781);
 
-	       //Set Buttons 
-	        Button btnExit = new Button();
-	        Button btnCheck = new Button();
-	        Button btnCall = new Button();
-	        Button btnRaise = new Button();
-	        Button btnFold = new Button();
-	        Button btnTest = new Button();
-	        Text txtNotify = new Text();
-	        Text txtNotify2 = new Text(); 
-	        Text timer = new Text();
-	       
-	        
-	        timer.setLayoutX(1100);
-	        timer.setLayoutY(720);
-	        timer.setCache(true);
-	        timer.setText(""+ time);
-	        timer.setFill(Color.YELLOW);
-	        timer.setFont(Font.font(null, FontWeight.BOLD, 56));
-	        
-	        EventHandler<ActionEvent> eventHandler = e -> {
-	            if (time == 10) {
-	            		timer.setFill(Color.ORANGE);
-	            }
-	            if (time == 5) {
-	            		timer.setFill(Color.RED);
-	            }
-	            
-	            timer.setText("" + time);
-	            if (time == 0) {
-	            		timer.setText("END");
-	            		time = 21;
-	            		timer.setFill(Color.YELLOW);
-	            		send = new Send(TIMEISUP);
-	            }
-	            time--;
-	            
-	            
-	            
-	            
-	            
-	            
-	        };
-	        Timeline animation = new Timeline(
-	        	      new KeyFrame(Duration.millis(1000), eventHandler));
-	        	animation.setCycleCount(Timeline.INDEFINITE);
-	        	animation.play();
-	        
-	        
-	        btnExit.setText("Exit Game");
-	        btnExit.setOnAction(new EventHandler<ActionEvent>() {
-	        		@Override 
-	        		public void handle(ActionEvent event) {
-	                System.exit(1);
-	            }
-	        });
-	        
-	        btnCheck.setText("Check");
-	        btnCheck.setLayoutX(300);
-	        btnCheck.setLayoutY(720);
-	        btnCheck.setOnAction(new EventHandler<ActionEvent>() {
-	        		@Override
-	            public void handle(ActionEvent event) {
-	        			displayNotification(txtNotify, txtNotify2, "You Check Your Hand");
-	        			send = new Send(CHECK);
-	            }
-	        });
-	     
-	        btnCall.setText("Call");
-	        btnCall.setLayoutX(400);
-	        btnCall.setLayoutY(720);
-	        btnCall.setOnAction(new EventHandler<ActionEvent>() {
-	        		@Override
-	            public void handle(ActionEvent event) {
-	        			if (myTurn == true) {
-	        				displayNotification(txtNotify, txtNotify2, "You Call the Bet");
-	        				send = new Send(CALL);
-	        			}	else {
-	        				displayNotification(txtNotify, txtNotify2, "It is not your turn yet");
-	        			}
-	            }
-	        });
-	       
-	        btnRaise.setText("Raise");
-	        btnRaise.setLayoutX(500);
-	        btnRaise.setLayoutY(720);
-	        btnRaise.setOnAction(new EventHandler<ActionEvent>() {
-	            @Override
-	            public void handle(ActionEvent event) {
-		            	displayNotification(txtNotify, txtNotify2, "You Raise the Bet");
-		            	send = new Send(RAISE);
-	            }
-	        });
-	        
-	        btnFold.setText("Fold");
-	        btnFold.setLayoutX(600);
-	        btnFold.setLayoutY(720);
-	        btnFold.setOnAction(new EventHandler<ActionEvent>() {
-	            @Override
-	            public void handle(ActionEvent event) {
-	                displayNotification(txtNotify, txtNotify2, "You Have Folded");
-	                send = new Send(FOLD);
-	            }
-	        });
-	        
-	        btnTest.setText("~TEST BUTTON~");
-	        btnTest.setLayoutX(800);
-	        btnTest.setLayoutY(720);
-	        btnTest.setOnAction(new EventHandler<ActionEvent>() {
-	        		@Override 
-	        		public void handle(ActionEvent event) {
-	                if (myTurn == true) {
-				        displayNotification(txtNotify, txtNotify2, "It's Your Turn!");
-	                } else {
-	                		displayNotification(txtNotify, txtNotify2, "Wait for your turn...");
-	                		myTurn = true;
-	                }
-	            }
-	        });   
-	       
-	        root.getChildren().add(canvas);
-	        root.getChildren().add(txtNotify);
-	        root.getChildren().add(txtNotify2);
-	        root.getChildren().add(btnExit);
-	        root.getChildren().add(btnCheck);
-	        root.getChildren().add(btnCall);
-	        root.getChildren().add(btnRaise);
-	        root.getChildren().add(btnFold);
-	        root.getChildren().add(btnTest);
-	        root.getChildren().add(timer);
-	        
-	        primaryStage.setScene(scene);
-	        primaryStage.show();
-	        
-	        renderGameScreen(gc);
-	        
-	        try {
-	        		player.setCard((Card) fromServer.readObject());
-				player.setCard((Card) fromServer.readObject());
-				otherPlayer.setCard((Card) fromServer.readObject());
-				otherPlayer.setCard((Card) fromServer.readObject());
-	            player.renderHand(gc);
-	            otherPlayer.renderHand(gc);
-	        } catch (Exception ex) {
-	        	
-	        }
-	        
-	          
-	    }
+        timer.setLayoutX(1100);
+        timer.setLayoutY(720);
+        timer.setCache(true);
+        timer.setText(""+ time);
+        timer.setFill(Color.YELLOW);
+        timer.setFont(Font.font(null, FontWeight.BOLD, 56));
+        
+        EventHandler<ActionEvent> eventHandler = e -> {
+            if (time == 10) {
+            		timer.setFill(Color.ORANGE);
+            }
+            if (time == 5) {
+            		timer.setFill(Color.RED);
+            }
+            timer.setText("" + time);
+            if (time == 0) {
+            		timer.setText("END");
+            		time = 21;
+            		timer.setFill(Color.YELLOW);
+            		send = new Send(TIMEISUP);
+            }
+            time--;    
+        };
+        
+        Timeline animation = new Timeline(
+        	      new KeyFrame(Duration.millis(1000), eventHandler));
+        	animation.setCycleCount(Timeline.INDEFINITE);
+        	animation.play();
+        
+        
+        btnExit.setText("Exit Game");
+        btnExit.setOnAction(e -> exit());
+        
+        btnCheck.setText("Check");
+        btnCheck.setLayoutX(300);
+        btnCheck.setLayoutY(720);
+        btnCheck.setOnAction(e -> check());
+     
+        btnCall.setText("Call");
+        btnCall.setLayoutX(400);
+        btnCall.setLayoutY(720);
+        btnCall.setOnAction(e -> call());
+       
+        btnRaise.setText("Raise");
+        btnRaise.setLayoutX(500);
+        btnRaise.setLayoutY(720);
+        btnRaise.setOnAction(e -> raise());
+        
+        btnFold.setText("Fold");
+        btnFold.setLayoutX(600);
+        btnFold.setLayoutY(720);
+        btnFold.setOnAction(e -> fold());
+        
+        btnTest.setText("~TEST BUTTON~");
+        btnTest.setLayoutX(800);
+        btnTest.setLayoutY(720);
+        btnTest.setOnAction(e -> test());   
+       
+        root.getChildren().add(canvas);
+        root.getChildren().add(txtNotify);
+        root.getChildren().add(txtNotify2);
+        root.getChildren().add(btnExit);
+        root.getChildren().add(btnCheck);
+        root.getChildren().add(btnCall);
+        root.getChildren().add(btnRaise);
+        root.getChildren().add(btnFold);
+        root.getChildren().add(btnTest);
+        root.getChildren().add(timer);
+        
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        
+        renderGameScreen(gc);
+        
+        try {
+        		//table = (Table) fromServer.readObject();
+        		player.setCard((Card) fromServer.readObject());
+			player.setCard((Card) fromServer.readObject());
+			//table.render(gc);
+            player.renderHand(gc);
+        } catch (Exception ex) {
+        	
+        }     
+    }
 	   
-	    public void incrementPlayerCount() {
-	    		playerCount++;
+    public void incrementPlayerCount() {
+    		playerCount++;
+    }
+    
+    public void renderGameScreen(GraphicsContext gc) {
+    		Image table = new Image("poker_table.png");
+    		gc.drawImage(table, 0, 0);
+    }
+    
+    
+    public void displayNotification(Text t1, Text t2, String text) {
+    		t1.setX(375);
+        t1.setY(75);
+        t1.setCache(true);
+        t1.setText(text);
+        t1.setFill(Color.RED);
+        t1.setFont(Font.font(null, FontWeight.BOLD, 56));
+        t1.setEffect(new GaussianBlur());
+        
+        t2.setX(375);
+        t2.setY(75);
+        t2.setCache(true);
+        t2.setText(text);
+        t2.setFill(Color.WHITE);
+        t2.setFont(Font.font(null, FontWeight.BOLD, 56));       
+    }
+    
+    public static void connectToServer() {
+    		try {
+    			Socket socket = new Socket(host, 8000);
+    			fromServer = new ObjectInputStream(socket.getInputStream());
+    			toServer = new ObjectOutputStream(socket.getOutputStream());
+    			
+    			//Get Seat
+    			int seatNum = fromServer.readInt();
+    			player = new Player(seatNum);
+    		} catch (Exception ex) {
+    			System.err.println(ex);
+    		} 
+    }	
+	
+	private void waitForPlayerAction() throws InterruptedException {
+	    while (waiting) {
+	      Thread.sleep(100);
 	    }
-	    
-	    public void renderGameScreen(GraphicsContext gc) {
-	    		Image table = new Image("poker_table.png");
-	    		gc.drawImage(table, 0, 0);
-	    }
-	    
-	    
-	    public void displayNotification(Text t1, Text t2, String text) {
-	    		t1.setX(350);
-	        t1.setY(400);
-	        t1.setCache(true);
-	        t1.setText(text);
-	        t1.setFill(Color.RED);
-	        t1.setFont(Font.font(null, FontWeight.BOLD, 56));
-	        t1.setEffect(new GaussianBlur());
-	        
-	        t2.setX(405);
-	        t2.setY(395);
-	        t2.setCache(true);
-	        t2.setText(text);
-	        t2.setFill(Color.WHITE);
-	        t2.setFont(Font.font(null, FontWeight.BOLD, 56));       
-	    }
-	    
-	    public static void connectToServer() {
-	    		try {
-	    			Socket socket = new Socket(host, 8000);
-	    			fromServer = new ObjectInputStream(socket.getInputStream());
-	    			toServer = new ObjectOutputStream(socket.getOutputStream());
-	    			
-	    			//Get Seat
-	    			int seatNum = fromServer.readInt();
-	    			player = new Player(seatNum);
-	    			
-	    			//Get other Player's seat
-	    			seatNum = fromServer.readInt();
-	    			otherPlayer = new Player(seatNum);
-	    		} catch (Exception ex) {
-	    			System.err.println(ex);
-	    		} 
-	    }	
-		
-		private void waitForPlayerAction() throws InterruptedException {
-		    while (waiting) {
-		      Thread.sleep(100);
-		    }
-		    waiting = true;
+	    waiting = true;
+	}
+	
+	private void check() {
+		displayNotification(txtNotify, txtNotify2, "You Check Your Hand");
+		send = new Send(CHECK);
+	}
+	
+	private void call() {
+		if (myTurn == true) {
+			displayNotification(txtNotify, txtNotify2, "You Call the Bet");
+			send = new Send(CALL);
+		}	else {
+			displayNotification(txtNotify, txtNotify2, "It is not your turn yet");
 		}
-		
-		private void receiveInfoFromServer() throws IOException {
-			
-		}
-		
-		private void recieveAction() throws IOException {
-			
-		}
-		
+	}
+	
+	private void test() {
+        if (myTurn == true) {
+	        displayNotification(txtNotify, txtNotify2, "It's Your Turn!");
+	        myTurn = false;
+        } else {
+        		displayNotification(txtNotify, txtNotify2, "Wait for your turn...");
+        		myTurn = true;
+        }	
+	}
+	
+	private void fold() {
+		displayNotification(txtNotify, txtNotify2, "You Have Folded");
+        send = new Send(FOLD);
+	}
+	
+	private void raise() {
+		displayNotification(txtNotify, txtNotify2, "You Raise the Bet");
+		send = new Send(RAISE);
+	}
+	
+	private void exit() {
+		System.exit(1);
+	}
 }

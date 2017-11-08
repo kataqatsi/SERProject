@@ -16,6 +16,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	ObjectInputStream fromPlayer[];
 	
 	Deck d;
+	Table table;
 	Player players[];
 	int numOfPlayers = 0;
 
@@ -46,25 +47,23 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				while(true) {
 					sessionNo++;
 					Socket player1 = serverSocket.accept();
-					toPlayer1 = new ObjectOutputStream(player1.getOutputStream());
-					fromPlayer1 = new ObjectInputStream(player1.getInputStream());
 					log.appendText(new Date() + ": Player 1 joined session " + sessionNo + '\n');
 					log.appendText("Player 1's IP address " +player1.getInetAddress().getHostAddress() + '\n');
 					numOfPlayers++;
 						
 					Socket player2 = serverSocket.accept();
-					toPlayer2 = new ObjectOutputStream(player2.getOutputStream());
-					fromPlayer2 = new ObjectInputStream(player2.getInputStream());
+					
 					log.appendText(new Date() + ": Player 2 joined session " + sessionNo + '\n');
 					log.appendText("Player 2's IP address " +player1.getInetAddress().getHostAddress() + '\n');
 					numOfPlayers++;
+					
 					players = new Player[numOfPlayers];
 					toPlayer = new ObjectOutputStream[numOfPlayers];
 					fromPlayer = new ObjectInputStream[numOfPlayers];
-					
-					
-					toPlayer[0] = players[0].getOut();
-					fromPlayer[1] = players[1].getInput();
+					toPlayer[0] = new ObjectOutputStream(player1.getOutputStream());
+					fromPlayer[0] = new ObjectInputStream(player1.getInputStream());
+					toPlayer[1] = new ObjectOutputStream(player2.getOutputStream());
+					fromPlayer[1] = new ObjectInputStream(player2.getInputStream());
 					
 					//Game thread, sends players off into instance of the game
 					new Thread(()->{
@@ -74,12 +73,11 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							//Assign player seat numbers
 							boolean stillPlaying = true;
 							assignSeats();
-							
-							
+							//sendTable();
 							//Game loop
 							//while(stillPlaying) {
-								startNewGame();
-								stillPlaying = false;
+							startNewGame();
+							stillPlaying = false;
 							//}
 						} catch(Exception ex) {
 							
@@ -101,33 +99,35 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		
 		//Deal cards to player 1
 		Card c = d.drawCard();
-		toPlayer1.writeObject(c);
+		toPlayer[0].writeObject(c);
 		c = d.drawCard();
-		toPlayer1.writeObject(c);
+		toPlayer[0].writeObject(c);
 		
 		
 		//Deal cards to player 2
 		c = d.drawCard();
-		toPlayer2.writeObject(c);
+		toPlayer[1].writeObject(c);
 		c = d.drawCard();
-		toPlayer2.writeObject(c);
+		toPlayer[1].writeObject(c);
 		
-		//Deal blank cards to every player to set for opponent
-		c.setSuit(Suit.CARDBACK);
-		toPlayer1.writeObject(c);
-		toPlayer1.writeObject(c);
-		toPlayer2.writeObject(c);
-		toPlayer2.writeObject(c);
 	}
 	
 	public void assignSeats() throws IOException {
 		int seatNum = 3;
-		
-		toPlayer1.writeInt(seatNum);
+		players[0] = new Player(seatNum);
+		toPlayer[0].writeInt(seatNum);
 		seatNum++;
-		toPlayer1.writeInt(seatNum);
-		toPlayer2.writeInt(seatNum);
-		seatNum--;
-		toPlayer2.writeInt(seatNum);
+		players[1] = new Player(seatNum);
+		toPlayer[1].writeInt(seatNum);	
+	}
+	
+	public void sendTable() throws IOException {
+		table = new Table(players);
+		table.setCards();
+		toPlayer[0].writeObject(table);
+		
+		table = new Table(players);
+		table.setCards();
+		toPlayer[1].writeObject(table);
 	}
 }
