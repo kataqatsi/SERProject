@@ -4,12 +4,19 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class TexasHoldemServer extends Application implements TexasHoldemConstants{
 	ObjectOutputStream toPlayer[];
@@ -18,6 +25,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	Deck d;
 	Table table;
 	Player players[];
+	Socket socket[];
+	Card flop[];
+	Card turn;
+	Card river;
+	int time = 10;
+	
+	int maxPlayers = 2;
 	int numOfPlayers = 0;
 
 	public static void main(String[] args) {
@@ -46,38 +60,60 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				//Loop connects new players to a game thread
 				while(true) {
 					sessionNo++;
-					Socket player1 = serverSocket.accept();
-					log.appendText(new Date() + ": Player 1 joined session " + sessionNo + '\n');
-					log.appendText("Player 1's IP address " +player1.getInetAddress().getHostAddress() + '\n');
-					numOfPlayers++;
-						
-					Socket player2 = serverSocket.accept();
+					socket = new Socket[maxPlayers];
 					
-					log.appendText(new Date() + ": Player 2 joined session " + sessionNo + '\n');
-					log.appendText("Player 2's IP address " +player1.getInetAddress().getHostAddress() + '\n');
-					numOfPlayers++;
+					for (int i = 0; i < maxPlayers; i++) {
+						socket[i] = serverSocket.accept();
+						log.appendText(new Date() + ": Player " + (i+1) + " joined session " + sessionNo + '\n');
+						log.appendText("Player " + (i+1) +"'s IP address " + socket[i].getInetAddress().getHostAddress() + '\n');
+						numOfPlayers++;
+					}
 					
 					players = new Player[numOfPlayers];
 					toPlayer = new ObjectOutputStream[numOfPlayers];
 					fromPlayer = new ObjectInputStream[numOfPlayers];
-					toPlayer[0] = new ObjectOutputStream(player1.getOutputStream());
-					fromPlayer[0] = new ObjectInputStream(player1.getInputStream());
-					toPlayer[1] = new ObjectOutputStream(player2.getOutputStream());
-					fromPlayer[1] = new ObjectInputStream(player2.getInputStream());
+					
+					for (int i = 0; i < numOfPlayers; i++) {
+						toPlayer[i] = new ObjectOutputStream(socket[i].getOutputStream());
+						fromPlayer[i] = new ObjectInputStream(socket[i].getInputStream());
+					}
 					
 					//Game thread, sends players off into instance of the game
 					new Thread(()->{
 						//GAME BEGINS HERE
 						Send send;
 						try {
-							//Assign player seat numbers
 							boolean stillPlaying = true;
-							assignSeats();
-							//sendTable();
+							assignSeats(); //Sends client seat number
+							
 							//Game loop
 							//while(stillPlaying) {
-							startNewGame();
-							stillPlaying = false;
+								sendTable(); //Sends client blank cards all players
+								dealCards(); //Sends client 2 cards
+								
+								
+								EventHandler<ActionEvent> eventHandler = e -> {
+						            if (time == 10) {
+						            		log.appendText("Player has " +time + " seconds to make a decision\n");
+						            }
+						            if (time == 5) {
+					            			log.appendText("Player has " +time + " seconds to make a decision\n");
+						            }
+						            if (time == 0) {
+						            		log.appendText("Player's time is up!\n");
+						            }
+						            time--;  
+						        };
+								
+								Timeline animation = new Timeline(
+						        	      new KeyFrame(Duration.millis(1000), eventHandler));
+						        	animation.setCycleCount(Timeline.INDEFINITE);
+						        	animation.play();
+								
+								sendTableFlop(); //Sends client blank cards+flop
+								sendTableFlopTurn(); //Sends client blank cards+flop+turn
+								sendTableFlopTurnRiver(); //Sends client blank cards+flop+turn+river
+								stillPlaying = false;
 							//}
 						} catch(Exception ex) {
 							
@@ -90,44 +126,75 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		;}).start();	
 	}
 	
-	public void startNewGame() throws IOException {
+	public void dealCards() throws IOException {
 		//Creates new Deck
 		d = new Deck();
 		d.shuffle();
 		d.shuffle();
 		d.shuffle();
+		Card c = new Card();
 		
-		//Deal cards to player 1
-		Card c = d.drawCard();
-		toPlayer[0].writeObject(c);
-		c = d.drawCard();
-		toPlayer[0].writeObject(c);
-		
-		
-		//Deal cards to player 2
-		c = d.drawCard();
-		toPlayer[1].writeObject(c);
-		c = d.drawCard();
-		toPlayer[1].writeObject(c);
-		
+		//Deal cards to each player
+		for (int i = 0; i < numOfPlayers; i++) {
+			c = d.drawCard();
+			players[i].setCard(c);
+			toPlayer[i].writeObject(c);
+			c = d.drawCard();
+			players[i].setCard(c);
+			toPlayer[i].writeObject(c);
+		}
 	}
 	
 	public void assignSeats() throws IOException {
+		//seatNum set to 3 for testing purposes
 		int seatNum = 3;
-		players[0] = new Player(seatNum);
-		toPlayer[0].writeInt(seatNum);
-		seatNum++;
-		players[1] = new Player(seatNum);
-		toPlayer[1].writeInt(seatNum);	
+		for (int i = 0; i < numOfPlayers; i++) {
+			players[i] = new Player(seatNum);
+			toPlayer[i].writeInt(seatNum);
+			seatNum++;
+		}
+		seatNum = 3;	
 	}
 	
 	public void sendTable() throws IOException {
 		table = new Table(players);
-		table.setCards();
-		toPlayer[0].writeObject(table);
-		
-		table = new Table(players);
-		table.setCards();
-		toPlayer[1].writeObject(table);
+		table.setPlayerCards();
+		for (int i = 0; i < numOfPlayers; i++) {
+			toPlayer[i].writeObject(table);
+		}	
 	}
+	
+	public void sendTableFlop() throws IOException {
+		flop = new Card[3];
+		flop[0] = d.drawCard();
+		flop[1] = d.drawCard();
+		flop[2] = d.drawCard();
+		
+		table = new Table(players, flop);
+		table.setPlayerCards();
+		for (int i = 0; i < numOfPlayers; i++) {
+			toPlayer[i].writeObject(table);
+		}	
+	}
+	
+	public void sendTableFlopTurn() throws IOException {
+		turn = d.drawCard();
+		
+		table = new Table(players, flop, turn);
+		table.setPlayerCards();
+		for (int i = 0; i < numOfPlayers; i++) {
+			toPlayer[i].writeObject(table);
+		}	
+	}
+	
+	public void sendTableFlopTurnRiver() throws IOException {
+		river = d.drawCard();
+		
+		table = new Table(players, flop, turn, river);
+		table.setPlayerCards();
+		for (int i = 0; i < numOfPlayers; i++) {
+			toPlayer[i].writeObject(table);
+		}	
+	}
+	
 }

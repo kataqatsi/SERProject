@@ -1,10 +1,11 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public class Player {
+public class Player implements Serializable {
 	private int seatNumber;
 	private String username;
 	private int chipCount;
@@ -13,12 +14,19 @@ public class Player {
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	
+	// IF USING DEFAULT CONSTRUCTOR, REQUIRES USE OF setSeatNum() 
+	// IMMEDIATELY AFTER
+	public Player() {
+		chipCount = 500;
+		card1 = new Card();
+		card2 = new Card();
+	}
+	
 	public Player(int num) {
 		seatNumber = num;
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
-		
 	}
 	
 	public void setChips(int chips) {

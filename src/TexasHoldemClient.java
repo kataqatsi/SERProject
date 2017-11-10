@@ -51,6 +51,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		//Launch JavaFX Game
 		launch(args);
 	}
+	
     
 	public void start(Stage primaryStage) {
     
@@ -135,10 +136,14 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         renderGameScreen(gc);
         
         try {
-        		//table = (Table) fromServer.readObject();
+        		table = (Table) fromServer.readObject(); //Table with blank cards for opponents
         		player.setCard((Card) fromServer.readObject());
 			player.setCard((Card) fromServer.readObject());
-			//table.render(gc);
+			table = (Table) fromServer.readObject(); //Table with flop + blank cards for opponents
+			table = (Table) fromServer.readObject(); //Table with flop + turn + blank cards for opponents
+			table = (Table) fromServer.readObject(); //Table with flop + turn + river + blank cards for opponents
+			
+			table.render(gc);
             player.renderHand(gc);
         } catch (Exception ex) {
         	
