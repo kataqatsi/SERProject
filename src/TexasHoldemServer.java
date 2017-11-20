@@ -25,10 +25,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	Deck d;
 	Table table;
 	Player players[];
+	Send playerMoves[];
 	Socket socket[];
 	Card flop[];
 	Card turn;
 	Card river;
+	int pot;
+	int currentBet;
 	int time = 10;
 	
 	int maxPlayers = 2;
@@ -81,12 +84,29 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					//Game thread, sends players off into instance of the game
 					new Thread(()->{
 						//GAME BEGINS HERE
-						Send send;
+						//Send send;
 						try {
 							boolean stillPlaying = true;
 							assignSeats(); //Sends client seat number
 							
 							//Game loop
+							while(stillPlaying) {//this loop is one round, so everytime it loops it is a new flop.
+								sendTable();
+								dealCards();
+
+								sendTableFlop();
+								loopPlayerTurn();
+
+								sendTableFlopTurn();
+								loopPlayerTurn();
+
+								sendTableFlopTurnRiver();
+								loopPlayerTurn();
+
+								//need to implement way for game to end
+								//probably if someone disconnects or runs out of money?
+								//or if there's only one person with money left
+							}
 							//while(stillPlaying) {
 								sendTable(); //Sends client blank cards all players
 								dealCards(); //Sends client 2 cards
@@ -196,5 +216,68 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			toPlayer[i].writeObject(table);
 		}	
 	}
-	
+
+	public void loopPlayerTurn() throws IOException {
+		int movesLeft = numOfPlayers;
+		int i = 0;
+    //for(int i = 0; i < forLoopCounter; i++) {
+		while(movesLeft > 0) {
+      // in this loop, we need to get each players move, and deal with it
+      playerMoves[i] = getPlayerMove(i);
+			switch(playerMoves[i]) {
+				case RAISE:
+					if(playerMoves[i].bet > currentBet) {
+						int bet = playerMoves[i].bet;
+						if(bet <= players[i].getChips()) {//allow the player to bet, they have the money
+							pot += bet-currentBet;
+							currentBet = bet;
+							movesLeft = numOfPlayers;//need to loop through everyone again to let them catch up with the raise
+						} else {
+							//fail the bet, and they fold
+							//TODO probably a good idea to set up a better system
+							//until then, it's on the player to be smart
+							players[i].clearCards();
+						}
+					}
+					break;
+				case CALL:
+					if(currentBet <= players[i].getChips()) {//allow the player to bet, they have the money
+						pot += currentBet;
+						currentBet = bet;
+						movesLeft = numOfPlayers;//need to loop through everyone again to let them catch up with the raise
+					} else {
+						//fail the bet, and they fold
+						//TODO probably a good idea to set up a better system
+						//until then, it's on the player to be smart
+						players[i].clearCards();
+					}
+					break;
+				case TIMEISUP:
+				case FOLD:
+					players[i].clearCards();
+				case CHECK:
+				default:
+					break;
+			}
+
+			i++;
+			i %= numOfPlayers;//lets us always loop through each player even when we need to go through multiple times in the case of a raise
+		}
+	}
+
+	public void playerDisconnected(int playerNum) {//deal with a player being disconnected
+
+	}
+
+	public Send getPlayerMove(int playerNum) {
+		while(true) {
+			try {
+				return (Send) fromPlayer[playerNum].readObject();
+			} catch(ClassNotFoundException e) {
+				System.out.println("class not found I guess:" + e);
+			} catch(IOException e) {
+				playerDisconnected(playerNum);
+			}
+		}
+  }
 }

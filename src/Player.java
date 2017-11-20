@@ -44,6 +44,11 @@ public class Player implements Serializable {
 	public String getUsername() {
 		return username;
 	}
+
+	public void clearCards() {
+		card1 = new Card();
+		card2 = new Card();
+	}
 	
 	public void setCard(Card c) {
 		if (card1.getValue() == 0) {
