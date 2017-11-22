@@ -1,6 +1,6 @@
 public class Send implements TexasHoldemConstants {
-	public int move; 
-	public int bet;
+	private int move; 
+	private int bet;
 	//moves:
 	//	CHECK = 11;
 	//	CALL = 12;
@@ -26,5 +26,21 @@ public class Send implements TexasHoldemConstants {
 		//if (move != RAISE) { //why bother changing this if the server will ignore it anyways?
 			//bet = TIMEISUP;
 		//}
+	}
+
+	public void setMove(int move) {
+		this.move = move;
+	}
+
+	public int getMove() {
+		return move;
+	}
+
+	public void setBet(int bet) {
+		this.bet = bet;
+	}
+
+	public int getBet() {
+		return bet;
 	}
 }

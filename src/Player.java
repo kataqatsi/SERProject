@@ -9,6 +9,7 @@ public class Player implements Serializable {
 	private int seatNumber;
 	private String username;
 	private int chipCount;
+	private int bet;
 	Card card1;
 	Card card2;
 	ObjectOutputStream out;
@@ -163,6 +164,14 @@ public class Player implements Serializable {
 	public Object readObject() throws IOException, ClassNotFoundException {
 		Object obj = in.readObject();
 		return obj;
+	}
+
+	public void setBet(int bet) {
+		this.bet = bet;
+	}
+
+	public int getBet() {
+		return bet;
 	}
 }
 
