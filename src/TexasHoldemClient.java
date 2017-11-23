@@ -112,8 +112,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        lobbyTitleNotification(txtNotify, txtNotify2, "TEXAS HOLD'EM");
-         
+        lobbyTitleNotification(txtNotify, txtNotify2, "TEXAS HOLD'EM");    
     }
 	   
     public void incrementPlayerCount() {
@@ -305,7 +304,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         	      new KeyFrame(Duration.millis(1000), eventHandler));
         	animation.setCycleCount(Timeline.INDEFINITE);
         	animation.play();
-        
         
         btnExit.setText("Exit Game");
         btnExit.setOnAction(e -> exit());
