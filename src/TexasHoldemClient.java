@@ -12,6 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+
+import javafx.beans.value.*;
+
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -35,6 +39,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private int time = 20;
 	private Send send;
 	private Table table;
+	private TextField inputBetAmount = new TextField();
 	private Button btnExit = new Button();
     private Button btnCheck = new Button();
     private Button btnCall = new Button();
@@ -108,14 +113,27 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         btnRaise.setLayoutX(500);
         btnRaise.setLayoutY(720);
         btnRaise.setOnAction(e -> raise());
+
+        inputBetAmount.setPromptText("Bet amount");
+        inputBetAmount.setLayoutX(575);
+        inputBetAmount.setLayoutY(720);
+				//make sure only integers are put in
+				inputBetAmount.textProperty().addListener(new ChangeListener<String>() {
+					@Override
+					public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+						if(!newValue.matches("^[0-9]*$")) {
+							inputBetAmount.setText(oldValue);
+						}
+					}
+				});
         
         btnFold.setText("Fold");
-        btnFold.setLayoutX(600);
+        btnFold.setLayoutX(800);
         btnFold.setLayoutY(720);
         btnFold.setOnAction(e -> fold());
         
         btnTest.setText("~TEST BUTTON~");
-        btnTest.setLayoutX(800);
+        btnTest.setLayoutX(900);
         btnTest.setLayoutY(720);
         btnTest.setOnAction(e -> test());   
        
@@ -128,26 +146,47 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         root.getChildren().add(btnRaise);
         root.getChildren().add(btnFold);
         root.getChildren().add(btnTest);
+        root.getChildren().add(inputBetAmount);
         root.getChildren().add(timer);
         
         primaryStage.setScene(scene);
         primaryStage.show();
         
         renderGameScreen(gc);
-        
-        try {
-        		table = (Table) fromServer.readObject(); //Table with blank cards for opponents
-        		player.setCard((Card) fromServer.readObject());
-			player.setCard((Card) fromServer.readObject());
-			table = (Table) fromServer.readObject(); //Table with flop + blank cards for opponents
-			table = (Table) fromServer.readObject(); //Table with flop + turn + blank cards for opponents
-			table = (Table) fromServer.readObject(); //Table with flop + turn + river + blank cards for opponents
+
+				boolean objectRecieved = false;
+
+				while(true) {
+					while(!objectRecieved) {
+						try {
+							table = (Table) fromServer.readObject(); //Table with blank cards for opponents
+							player = (Player) fromServer.readObject();//recieve the player info from the server
+							objectRecieved = true;
+						} catch (Exception ex) {
+							objectRecieved = false;
+							//lmao screw the exception
+						}
+					}
+					objectRecieved = false;
+
+					table.render(gc);
+          player.renderHand(gc);
+				}
+
+
+        //try {
+            //table = (Table) fromServer.readObject(); //Table with blank cards for opponents
+            //player.setCard((Card) fromServer.readObject());
+			//player.setCard((Card) fromServer.readObject());
+			//table = (Table) fromServer.readObject(); //Table with flop + blank cards for opponents
+			//table = (Table) fromServer.readObject(); //Table with flop + turn + blank cards for opponents
+			//table = (Table) fromServer.readObject(); //Table with flop + turn + river + blank cards for opponents
 			
-			table.render(gc);
-            player.renderHand(gc);
-        } catch (Exception ex) {
-        	
-        }     
+			//table.render(gc);
+            //player.renderHand(gc);
+        //} catch (Exception ex) {
+          
+        //}     
     }
 	   
     public void incrementPlayerCount() {
@@ -184,8 +223,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
     			toServer = new ObjectOutputStream(socket.getOutputStream());
     			
     			//Get Seat
-    			int seatNum = fromServer.readInt();
-    			player = new Player(seatNum);
+          //int seatNum = fromServer.readInt();
+					player = (Player) fromServer.readObject();
+          //player = new Player(seatNum);
     		} catch (Exception ex) {
     			System.err.println(ex);
     		} 
@@ -229,7 +269,11 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	
 	private void raise() {
 		displayNotification(txtNotify, txtNotify2, "You Raise the Bet");
-		send = new Send(RAISE);
+		if(inputBetAmount.getText().isEmpty()) {
+			call();//if you didn't input anything, then just call
+		} else {
+			send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
+		}
 	}
 	
 	private void exit() {

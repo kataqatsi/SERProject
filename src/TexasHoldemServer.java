@@ -95,24 +95,33 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							//while(stillPlaying) {//this loop is one round, so everytime it loops it is a new flop.
 							while(!isGameOver()) {//this loop is one round, so everytime it loops it is a new flop.
 								//run it while the game isn't over
-								dealCards();
 
 								//NEED TO UPDATE ALL SENDTABLE FUNCTIONS TO ALSO SEND THE INDIVIDUAL PLAYERS, AND UPDATE CLIENT TO RECIEVE BOTH OBJECTS
+								//and in general sync up the server and client sending/recieving
 								sendTable();
 
+								dealCards();
+
 								currentBet = 0;
-								playerMoves[(dealer+1)%numOfPlayers] = new Send(RAISE, 5);
-								playerMoves[(dealer+2)%numOfPlayers] = new Send(RAISE, 10);
+								playerMoves[(dealer+1)%numOfPlayers] = new Send(RAISE, 5);//little blind
+								playerMoves[(dealer+2)%numOfPlayers] = new Send(RAISE, 10);//big blind
 								loopPlayerTurn(dealer+3);//preflop
 
 								sendTableFlop();
-								loopPlayerTurn(dealer+1);
+								loopPlayerTurn((dealer+1)%numOfPlayers);
 
 								sendTableFlopTurn();
-								loopPlayerTurn(dealer+1);
+								loopPlayerTurn((dealer+1)%numOfPlayers);
 
 								sendTableFlopTurnRiver();
-								loopPlayerTurn(dealer+1);
+								loopPlayerTurn((dealer+1)%numOfPlayers);
+
+								//need to calculate round winner and give them the pot
+								//that'll be easy once Jacob has the scoring thing done
+								//
+								//literally just something like players[winnerNum].addChips(pot);
+								//and pot = 0;
+								//may need to make sure those functions exist but you get the idea
 
 								//need to implement way for game to end
 								//probably if someone disconnects or runs out of money?
@@ -173,22 +182,25 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		for (int i = 0; i < numOfPlayers; i++) {
 			c = d.drawCard();
 			players[i].setCard(c);
-			toPlayer[i].writeObject(c);
+			//toPlayer[i].writeObject(c);
 			c = d.drawCard();
 			players[i].setCard(c);
-			toPlayer[i].writeObject(c);
+
+			toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}
 	}
 	
 	public void assignSeats() throws IOException {
 		//seatNum set to 3 for testing purposes
-		int seatNum = 3;
+		//int seatNum = 3;
 		for (int i = 0; i < numOfPlayers; i++) {
-			players[i] = new Player(seatNum);
-			toPlayer[i].writeInt(seatNum);
-			seatNum++;
+			players[i] = new Player(i);
+			//players[i] = new Player(seatNum);
+			//toPlayer[i].writeInt(seatNum);
+			toPlayer[i].writeObject(players[i]);
+			//seatNum++;
 		}
-		seatNum = 3;	
+		//seatNum = 3;	
 	}
 	
 	public void sendTable() throws IOException {
@@ -196,6 +208,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
+			toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}	
 	}
 	
@@ -209,6 +222,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
+			toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}	
 	}
 	
@@ -219,6 +233,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
+			toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}	
 	}
 	
@@ -229,6 +244,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
+			toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}	
 	}
 
@@ -242,12 +258,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		} else if(numPlayersWithChips > 1) {
 			return false; //multiple people have chips, so game is still going
 		} else if(players[playerNum].getChips() == 0) {
-			isGameOver(playerNum-1, numPlayersWithChips);
+			return isGameOver(playerNum-1, numPlayersWithChips);
 		} else {
-			isGameOver(playerNum-1, numPlayersWithChips+1);
+			return isGameOver(playerNum-1, numPlayersWithChips+1);
 		}
 	}
-	public boolean betFunction(int i) { //return true if player can bet, otherwise false
+
+	public boolean betFunction(int i) { //return true if player successfully bet, otherwise false
 		if(playerMoves[i].getBet() > currentBet) {
 			int bet = playerMoves[i].getBet();
 			if(bet <= players[i].getChips()) {//allow the player to bet, they have the money
@@ -292,12 +309,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					players[i].clearCards();
 					playersPlaying--;
 				case CHECK:
+					if(players[i].getBet() != currentBet) {
+						playersPlaying--;//they tried to check when they weren't allowed to, out of this round
+					}
 				default:
 					break;
 			}
 			
-			//pot += currentBet;
-
 			i++;
 			i %= numOfPlayers;//lets us always loop through each player even when we need to go through multiple times in the case of a raise
 		}
