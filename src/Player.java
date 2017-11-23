@@ -17,6 +17,7 @@ public class Player implements Serializable {
 	// IF USING DEFAULT CONSTRUCTOR, REQUIRES USE OF setSeatNum() 
 	// IMMEDIATELY AFTER
 	public Player() {
+		seatNumber = 0;
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
@@ -44,14 +45,13 @@ public class Player implements Serializable {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public void setCard(Card c) {
 		if (card1.getValue() == 0) {
 			card1 = c;
 		} else {
 			card2 = c;
 		}
-		
 		if ((card1.getValue() != 0) && card2.getValue() != 0) {
 			switch(seatNumber) {
 			case 1:
@@ -133,6 +133,10 @@ public class Player implements Serializable {
 	
 	public void setSeatNum(int s) {
 		seatNumber = s;
+	}
+	
+	public int getSeatNum() {
+		return seatNumber;
 	}
 	
 	public ObjectInputStream getInput() {
