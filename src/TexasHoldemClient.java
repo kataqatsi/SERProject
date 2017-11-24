@@ -37,7 +37,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static Player player;
 	private boolean gameOver = false;
 	private int time = 20;
-	private Send send;
+	//private Send send;
 	private Table table;
 	private TextField inputBetAmount = new TextField();
 	private Button btnExit = new Button();
@@ -85,7 +85,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
             		timer.setText("END");
             		time = 21;
             		timer.setFill(Color.YELLOW);
-            		send = new Send(TIMEISUP);
+                //send = new Send(TIMEISUP);
+								sendTurn(new Send(TIMEISUP));
             }
             time--;    
         };
@@ -250,13 +251,13 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	
 	private void check() {
 		displayNotification(txtNotify, txtNotify2, "You Check Your Hand");
-		send = new Send(CHECK);
+		sendTurn(new Send(CHECK));//send = new Send(CHECK);
 	}
 	
 	private void call() {
 		if (myTurn == true) {
 			displayNotification(txtNotify, txtNotify2, "You Call the Bet");
-			send = new Send(CALL);
+			sendTurn(new Send(CALL));//send = new Send(CALL);
 		}	else {
 			displayNotification(txtNotify, txtNotify2, "It is not your turn yet");
 		}
@@ -274,7 +275,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	
 	private void fold() {
 		displayNotification(txtNotify, txtNotify2, "You Have Folded");
-        send = new Send(FOLD);
+		sendTurn(new Send(FOLD));
+        //send = new Send(FOLD);
 	}
 	
 	private void raise() {
@@ -282,9 +284,20 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		if(inputBetAmount.getText().isEmpty()) {
 			call();//if you didn't input anything, then just call
 		} else {
-			send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
+			sendTurn(new Send(RAISE, Integer.parseInt(inputBetAmount.getText())));
+			//send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
 		}
 	}
+
+
+	private void sendTurn(Send send) {
+		try {
+			toServer.writeObject(send);
+		} catch (Exception ex) {
+			System.out.println("failed to send I guess");
+		}
+	}
+
 	
 	private void exit() {
 		System.exit(1);
