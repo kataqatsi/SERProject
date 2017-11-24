@@ -84,11 +84,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					
 					//Game thread, sends players off into instance of the game
 					new Thread(()->{
+						System.out.println("thread spawned");
 						//GAME BEGINS HERE
 						//Send send;
 						try {
 							//boolean stillPlaying = true;
 							assignSeats(); //Sends client seat number
+							System.out.println("seats asigned");
 							int dealer = 0;
 							
 							//Game loop
@@ -98,13 +100,15 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 
 								//NEED TO UPDATE ALL SENDTABLE FUNCTIONS TO ALSO SEND THE INDIVIDUAL PLAYERS, AND UPDATE CLIENT TO RECIEVE BOTH OBJECTS
 								//and in general sync up the server and client sending/recieving
-								sendTable();
-
 								dealCards();
+								System.out.println("sending table");
+								sendTable();
+								System.out.println("table sent");
 
 								currentBet = 0;
 								playerMoves[(dealer+1)%numOfPlayers] = new Send(RAISE, 5);//little blind
 								playerMoves[(dealer+2)%numOfPlayers] = new Send(RAISE, 10);//big blind
+								
 								loopPlayerTurn(dealer+3);//preflop
 
 								sendTableFlop();
@@ -186,7 +190,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			c = d.drawCard();
 			players[i].setCard(c);
 
-			toPlayer[i].writeObject(players[i]);//just send the client the entire player
+			//toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}
 	}
 	
@@ -194,10 +198,11 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		//seatNum set to 3 for testing purposes
 		//int seatNum = 3;
 		for (int i = 0; i < numOfPlayers; i++) {
+			System.out.println("assignSeats");
 			players[i] = new Player(i);
 			//players[i] = new Player(seatNum);
 			//toPlayer[i].writeInt(seatNum);
-			toPlayer[i].writeObject(players[i]);
+			//toPlayer[i].writeObject(players[i]);
 			//seatNum++;
 		}
 		//seatNum = 3;	
@@ -249,14 +254,15 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	}
 
 	public boolean isGameOver() {
-		return isGameOver(numOfPlayers, 0);//just makes it easier to call this from other places, because you have to initially call it like this
+		//subtract 1 so it works with array indices
+		return isGameOver(numOfPlayers-1, 0);//just makes it easier to call this from other places, because you have to initially call it like this
 		//don't judge my crappy hacks
 	}
 	public boolean isGameOver(int playerNum, int numPlayersWithChips) {
-		if(playerNum < 0) {
-			return true; //the function got past the last player and never returned false, so the game is over
-		} else if(numPlayersWithChips > 1) {
+		if(numPlayersWithChips > 1) {
 			return false; //multiple people have chips, so game is still going
+		} else if(playerNum < 0) {
+			return true; //the function got past the last player and never returned false, so the game is over
 		} else if(players[playerNum].getChips() == 0) {
 			return isGameOver(playerNum-1, numPlayersWithChips);
 		} else {

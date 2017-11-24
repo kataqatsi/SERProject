@@ -159,18 +159,28 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				while(true) {
 					while(!objectRecieved) {
 						try {
+							System.out.println("waiting for table");
 							table = (Table) fromServer.readObject(); //Table with blank cards for opponents
+							System.out.println("table recieved\nwaiting for player");
 							player = (Player) fromServer.readObject();//recieve the player info from the server
+							System.out.println("player recieved");
 							objectRecieved = true;
-						} catch (Exception ex) {
+						} catch (IOException ex) {
+							System.out.println("test4");
 							objectRecieved = false;
-							//lmao screw the exception
+						} catch (Exception ex) {
+							System.out.println("test3");
+							objectRecieved = false;
 						}
 					}
-					objectRecieved = false;
+					System.out.println("objects recieved");
 
+					System.out.println("rendering table");
 					table.render(gc);
+					System.out.println("table rendered\n rendering hand");
           player.renderHand(gc);
+					System.out.println("player rendered");
+					objectRecieved = false;
 				}
 
 
@@ -224,7 +234,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
     			
     			//Get Seat
           //int seatNum = fromServer.readInt();
-					player = (Player) fromServer.readObject();
+					//player = (Player) fromServer.readObject();
           //player = new Player(seatNum);
     		} catch (Exception ex) {
     			System.err.println(ex);
