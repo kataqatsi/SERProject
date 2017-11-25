@@ -14,6 +14,12 @@ public class Player implements Serializable {
 	Card card2;
 	ObjectOutputStream out;
 	ObjectInputStream in;
+
+	public void printout() {
+		//System.out.println("chips:" + chipCount);
+		System.out.print("card1:" + card1.toString());
+		System.out.print("card2:" + card2.toString());
+	}
 	
 	// IF USING DEFAULT CONSTRUCTOR, REQUIRES USE OF setSeatNum() 
 	// IMMEDIATELY AFTER
@@ -26,6 +32,13 @@ public class Player implements Serializable {
 	public Player(int num) {
 		seatNumber = num;
 		chipCount = 500;
+		card1 = new Card();
+		card2 = new Card();
+	}
+
+	public Player(int num, int chips) {
+		seatNumber = num;
+		chipCount = chips;
 		card1 = new Card();
 		card2 = new Card();
 	}
@@ -137,6 +150,9 @@ public class Player implements Serializable {
 		card2.render(gc);
 	}
 	
+	public int getSeatNum() {
+		return seatNumber;
+	}
 	public void setSeatNum(int s) {
 		seatNumber = s;
 	}

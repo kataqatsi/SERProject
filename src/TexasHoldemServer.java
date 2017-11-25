@@ -195,25 +195,26 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	}
 	
 	public void assignSeats() throws IOException {
-		//seatNum set to 3 for testing purposes
-		//int seatNum = 3;
+		int seatNum = 1;
 		for (int i = 0; i < numOfPlayers; i++) {
-			//System.out.println("assignSeats");
-			players[i] = new Player(i);
-			//players[i] = new Player(seatNum);
-			//toPlayer[i].writeInt(seatNum);
-			//toPlayer[i].writeObject(players[i]);
-			//seatNum++;
+			//players[i] = new Player(i);
+			players[i] = new Player(seatNum);
+			seatNum++;
 		}
-		//seatNum = 3;	
 	}
 	
 	public void sendTable() throws IOException {
+			//players[0].printout();
 		table = new Table(players);
+			//players[0].printout();
 		table.setPlayerCards();
+			//players[0].printout();
 		for (int i = 0; i < numOfPlayers; i++) {
+			//players[i].printout();
 			toPlayer[i].writeObject(table);
 			toPlayer[i].writeObject(players[i]);//just send the client the entire player
+			//players[i].printout();
+			//System.out.println("-----");
 		}	
 	}
 	

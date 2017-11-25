@@ -34,7 +34,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static ObjectOutputStream toServer;
 	private boolean waiting = true;
 	private boolean myTurn = false;
-	private static Player player;
+	private Player player;
 	private boolean gameOver = false;
 	private int time = 20;
 	//private Send send;
@@ -194,6 +194,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				System.out.println("table recieved\nwaiting for player");
 				player = (Player) fromServer.readObject();//recieve the player info from the server
 				System.out.println("player recieved");
+				player.printout();
+				System.out.println();
 				objectRecieved = true;
 			} catch (IOException ex) {
 				System.out.println("test4");

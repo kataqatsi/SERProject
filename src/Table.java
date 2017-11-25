@@ -10,7 +10,15 @@ public class Table implements Serializable {
 		int pot;
     
     public Table(Player[] p) {
-        player = p;
+        //player = p;
+				player = new Player[p.length];
+				for (int i = 0; i < player.length; i++) {
+					//p[i].printout();
+					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+					//player[i].printout();
+					//player[i].clearCards();
+					//player[i].printout();
+				}
         
         //set flop to blank cards
         flop = new Card[3];
