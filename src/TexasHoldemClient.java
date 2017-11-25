@@ -155,34 +155,19 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         
         renderGameScreen(gc);
 
-				boolean objectRecieved = false;
 
-				while(true) {
-					while(!objectRecieved) {
-						try {
-							System.out.println("waiting for table");
-							table = (Table) fromServer.readObject(); //Table with blank cards for opponents
-							System.out.println("table recieved\nwaiting for player");
-							player = (Player) fromServer.readObject();//recieve the player info from the server
-							System.out.println("player recieved");
-							objectRecieved = true;
-						} catch (IOException ex) {
-							System.out.println("test4");
-							objectRecieved = false;
-						} catch (Exception ex) {
-							System.out.println("test3");
-							objectRecieved = false;
-						}
-					}
-					System.out.println("objects recieved");
+				recieveObjects();
+				//while(true) {
+				//while(true) {
+					//System.out.println("objects recieved");
 
-					System.out.println("rendering table");
+					//System.out.println("rendering table");
+					renderGameScreen(gc);
 					table.render(gc);
-					System.out.println("table rendered\n rendering hand");
+					//System.out.println("table rendered\n rendering hand");
           player.renderHand(gc);
-					System.out.println("player rendered");
-					objectRecieved = false;
-				}
+					//System.out.println("player rendered");
+				//}
 
 
         //try {
@@ -200,6 +185,26 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         //}     
     }
 	   
+	public void recieveObjects() {
+		boolean objectRecieved = false;
+		while(!objectRecieved) {
+			try {
+				System.out.println("waiting for table");
+				table = (Table) fromServer.readObject(); //Table with blank cards for opponents
+				System.out.println("table recieved\nwaiting for player");
+				player = (Player) fromServer.readObject();//recieve the player info from the server
+				System.out.println("player recieved");
+				objectRecieved = true;
+			} catch (IOException ex) {
+				System.out.println("test4");
+				objectRecieved = false;
+			} catch (Exception ex) {
+				System.out.println("test3");
+				objectRecieved = false;
+			}
+		}
+	}
+
     public void incrementPlayerCount() {
     		playerCount++;
     }
@@ -252,6 +257,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private void check() {
 		displayNotification(txtNotify, txtNotify2, "You Check Your Hand");
 		sendTurn(new Send(CHECK));//send = new Send(CHECK);
+		recieveObjects();
 	}
 	
 	private void call() {
@@ -261,6 +267,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		}	else {
 			displayNotification(txtNotify, txtNotify2, "It is not your turn yet");
 		}
+		recieveObjects();
 	}
 	
 	private void test() {
@@ -277,6 +284,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		displayNotification(txtNotify, txtNotify2, "You Have Folded");
 		sendTurn(new Send(FOLD));
         //send = new Send(FOLD);
+		recieveObjects();
 	}
 	
 	private void raise() {
@@ -287,6 +295,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			sendTurn(new Send(RAISE, Integer.parseInt(inputBetAmount.getText())));
 			//send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
 		}
+		recieveObjects();
 	}
 
 

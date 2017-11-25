@@ -198,7 +198,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		//seatNum set to 3 for testing purposes
 		//int seatNum = 3;
 		for (int i = 0; i < numOfPlayers; i++) {
-			System.out.println("assignSeats");
+			//System.out.println("assignSeats");
 			players[i] = new Player(i);
 			//players[i] = new Player(seatNum);
 			//toPlayer[i].writeInt(seatNum);
