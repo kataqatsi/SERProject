@@ -127,14 +127,14 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         primaryStage.setScene(scene);
         primaryStage.show();
         
-        renderGameScreen(gc);
+        //renderGameScreen(gc);
 
 
-				recieveObjects();
+				//recieveObjects();
 
-				renderGameScreen(gc);
-				table.render(gc);
-        player.renderHand(gc);
+				//renderGameScreen(gc);
+				//table.render(gc);
+        //player.renderHand(gc);
     }
 	   
 	public void recieveObjects() {
