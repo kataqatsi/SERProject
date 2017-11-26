@@ -1,4 +1,5 @@
-public class Send implements TexasHoldemConstants {
+import java.io.Serializable;
+public class Send implements Serializable, TexasHoldemConstants {
 	private int move; 
 	private int bet;
 	//moves:

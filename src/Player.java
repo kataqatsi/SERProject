@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Player implements Serializable {
 	private int seatNumber;
+	private boolean isTurn;
 	private String username;
 	private int chipCount;
 	private int bet;
@@ -24,12 +25,14 @@ public class Player implements Serializable {
 	// IF USING DEFAULT CONSTRUCTOR, REQUIRES USE OF setSeatNum() 
 	// IMMEDIATELY AFTER
 	public Player() {
+		isTurn = false;
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
 	}
 	
 	public Player(int num) {
+		isTurn = false;
 		seatNumber = num;
 		chipCount = 500;
 		card1 = new Card();
@@ -37,6 +40,7 @@ public class Player implements Serializable {
 	}
 
 	public Player(int num, int chips) {
+		isTurn = false;
 		seatNumber = num;
 		chipCount = chips;
 		card1 = new Card();

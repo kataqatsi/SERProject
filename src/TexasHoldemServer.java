@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.Date;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+//import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,15 +25,15 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	Deck d;
 	Table table;
 	Player players[];
-	Send playerMoves[];
 	Socket socket[];
+	Send playerMoves[];
 	Card flop[];
 	Card turn;
 	Card river;
 	int pot;
 	int movesLeft;
 	int currentBet;
-	int time = 10;
+	//int time = 10;
 	
 	int maxPlayers = 2;
 	int numOfPlayers = 0;
@@ -93,6 +93,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							System.out.println("seats asigned");
 							int dealer = 0;
 							
+							playerMoves = new Send[numOfPlayers];
 							//Game loop
 							//while(stillPlaying) {//this loop is one round, so everytime it loops it is a new flop.
 							while(!isGameOver()) {//this loop is one round, so everytime it loops it is a new flop.
@@ -106,19 +107,26 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 								System.out.println("table sent");
 
 								currentBet = 0;
+
 								playerMoves[(dealer+1)%numOfPlayers] = new Send(RAISE, 5);//little blind
+								betFunction((dealer+1)%numOfPlayers);
 								playerMoves[(dealer+2)%numOfPlayers] = new Send(RAISE, 10);//big blind
+								betFunction((dealer+2)%numOfPlayers);
 								
-								loopPlayerTurn(dealer+3);//preflop
+								loopPlayerTurn((dealer+3)%numOfPlayers);//preflop
+								System.out.println("preflop");
 
 								sendTableFlop();
 								loopPlayerTurn((dealer+1)%numOfPlayers);
+								System.out.println("flop");
 
 								sendTableFlopTurn();
 								loopPlayerTurn((dealer+1)%numOfPlayers);
+								System.out.println("turn");
 
 								sendTableFlopTurnRiver();
 								loopPlayerTurn((dealer+1)%numOfPlayers);
+								System.out.println("river");
 
 								//need to calculate round winner and give them the pot
 								//that'll be easy once Jacob has the scoring thing done
@@ -140,6 +148,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 								//dealCards(); //Sends client 2 cards
 								
 								
+							/*
 								EventHandler<ActionEvent> eventHandler = e -> {
 						            if (time == 10) {
 						            		log.appendText("Player has " +time + " seconds to make a decision\n");
@@ -152,11 +161,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 						            }
 						            time--;  
 						        };
+										*/
 								
-								Timeline animation = new Timeline(
+								/*Timeline animation = new Timeline(
 						        	      new KeyFrame(Duration.millis(1000), eventHandler));
 						        	animation.setCycleCount(Timeline.INDEFINITE);
 						        	animation.play();
+											*/
 								
 								//sendTableFlop(); //Sends client blank cards+flop
 								//sendTableFlopTurn(); //Sends client blank cards+flop+turn
@@ -272,11 +283,16 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	}
 
 	public boolean betFunction(int i) { //return true if player successfully bet, otherwise false
-		if(playerMoves[i].getBet() > currentBet) {
-			int bet = playerMoves[i].getBet();
+		int bet = currentBet;
+		//what a screwed up if statement
+		//so sorry
+		if(playerMoves[i].getMove() == CALL || playerMoves[i].getBet() > currentBet) {
 			if(bet <= players[i].getChips()) {//allow the player to bet, they have the money
+				if(playerMoves[i].getMove() == RAISE) {
+					bet = playerMoves[i].getBet();
+					movesLeft = numOfPlayers;//need to loop through everyone again to let them catch up with the raise
+				}
 				currentBet = bet;
-				movesLeft = numOfPlayers;//need to loop through everyone again to let them catch up with the raise
 				pot += bet - players[i].getBet();
 				players[i].setBet(playerMoves[i].getBet());
 				return true;
@@ -299,7 +315,10 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
     //for(int i = 0; i < forLoopCounter; i++) {
 		while(movesLeft > 0) {
       // in this loop, we need to get each players move, and deal with it
+			//first need to tell player we're waiting for their move
+			System.out.println(movesLeft + "recieving player move");
       playerMoves[i] = getPlayerMove(i);
+			System.out.println("player move recieved");
 			switch(playerMoves[i].getMove()) {
 				case RAISE:
 					if(!betFunction(i)) {//if they couldn't bet, the function returns false and there's one less player playing
@@ -322,7 +341,14 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				default:
 					break;
 			}
+			System.out.println(movesLeft);
+			movesLeft--;
+			System.out.println(movesLeft);
 			
+			toPlayer[i].writeObject(table);
+			toPlayer[i].writeObject(players[i]);//just send the client the entire player
+
+
 			i++;
 			i %= numOfPlayers;//lets us always loop through each player even when we need to go through multiple times in the case of a raise
 		}
@@ -333,14 +359,21 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	}
 
 	public Send getPlayerMove(int playerNum) {
-		while(true) {
+		boolean recieved = false;
+		Send returnObject = new Send();
+		while(!recieved) {
 			try {
-				return (Send) fromPlayer[playerNum].readObject();
+				returnObject = (Send) fromPlayer[playerNum].readObject();
+				recieved = true;
 			} catch(ClassNotFoundException e) {
-				System.out.println("class not found I guess:" + e);
+				//System.out.println("class not found I guess:" + e);
 			} catch(IOException e) {
-				playerDisconnected(playerNum);
+				//System.out.println("object not recieved:" + e);
+				//playerDisconnected(playerNum);
+			} catch(Exception e) {
+				//System.out.println(e);
 			}
 		}
+		return returnObject;
   }
 }
