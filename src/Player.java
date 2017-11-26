@@ -7,25 +7,43 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Player implements Serializable {
 	private int seatNumber;
+	private boolean isTurn;
 	private String username;
 	private int chipCount;
-	Card card1;
-	Card card2;
-	ObjectOutputStream out;
-	ObjectInputStream in;
+	private int bet;
+	private Card card1;
+	private Card card2;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
+
+	public void printout() {
+		//System.out.println("chips:" + chipCount);
+		System.out.print("card1:" + card1.toString());
+		System.out.print("card2:" + card2.toString());
+	}
 	
 	// IF USING DEFAULT CONSTRUCTOR, REQUIRES USE OF setSeatNum() 
 	// IMMEDIATELY AFTER
 	public Player() {
 		seatNumber = 0;
+		isTurn = false;
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
 	}
 	
 	public Player(int num) {
+		isTurn = false;
 		seatNumber = num;
 		chipCount = 500;
+		card1 = new Card();
+		card2 = new Card();
+	}
+
+	public Player(int num, int chips) {
+		isTurn = false;
+		seatNumber = num;
+		chipCount = chips;
 		card1 = new Card();
 		card2 = new Card();
 	}
@@ -46,6 +64,11 @@ public class Player implements Serializable {
 		return username;
 	}
 
+	public void clearCards() {
+		card1 = new Card();
+		card2 = new Card();
+	}
+	
 	public void setCard(Card c) {
 		if (card1.getValue() == 0) {
 			card1 = c;
@@ -162,6 +185,14 @@ public class Player implements Serializable {
 	public Object readObject() throws IOException, ClassNotFoundException {
 		Object obj = in.readObject();
 		return obj;
+	}
+
+	public void setBet(int bet) {
+		this.bet = bet;
+	}
+
+	public int getBet() {
+		return bet;
 	}
 }
 
