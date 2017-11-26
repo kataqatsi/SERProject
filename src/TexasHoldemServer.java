@@ -102,7 +102,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 								//NEED TO UPDATE ALL SENDTABLE FUNCTIONS TO ALSO SEND THE INDIVIDUAL PLAYERS, AND UPDATE CLIENT TO RECIEVE BOTH OBJECTS
 								//and in general sync up the server and client sending/recieving
 								dealCards();
-								System.out.println("sending table");
+								System.out.println("cards dealt");
 								sendTable();
 								System.out.println("table sent");
 
@@ -191,18 +191,23 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		d.shuffle();
 		d.shuffle();
 		d.shuffle();
-		Card c = new Card();
+		//Card c;
+		//Card c = new Card();
 		
 		//Deal cards to each player
 		for (int i = 0; i < numOfPlayers; i++) {
-			c = d.drawCard();
-			players[i].setCard(c);
+			players[i].clearCards();
+			//c = d.drawCard();
+			players[i].setCard(d.drawCard());
+			//players[i].setCard(c);
 			//toPlayer[i].writeObject(c);
-			c = d.drawCard();
-			players[i].setCard(c);
+			//c = d.drawCard();
+			players[i].setCard(d.drawCard());
 
+			players[i].printout();
 			//toPlayer[i].writeObject(players[i]);//just send the client the entire player
 		}
+		table = new Table(players);
 	}
 	
 	public void assignSeats() throws IOException {
@@ -216,7 +221,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	
 	public void sendTable() throws IOException {
 			//players[0].printout();
-		table = new Table(players);
 			//players[0].printout();
 		table.setPlayerCards();
 			//players[0].printout();
@@ -236,33 +240,36 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		flop[2] = d.drawCard();
 		
 		table = new Table(players, flop);
-		table.setPlayerCards();
+		/*table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
 			toPlayer[i].writeObject(players[i]);//just send the client the entire player
-		}	
+		}*/
+		sendTable();
 	}
 	
 	public void sendTableFlopTurn() throws IOException {
 		turn = d.drawCard();
 		
 		table = new Table(players, flop, turn);
-		table.setPlayerCards();
+		/*table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
 			toPlayer[i].writeObject(players[i]);//just send the client the entire player
-		}	
+		}*/
+		sendTable();
 	}
 	
 	public void sendTableFlopTurnRiver() throws IOException {
 		river = d.drawCard();
 		
 		table = new Table(players, flop, turn, river);
-		table.setPlayerCards();
+		/*table.setPlayerCards();
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
 			toPlayer[i].writeObject(players[i]);//just send the client the entire player
-		}	
+		}*/
+		sendTable();
 	}
 
 	public boolean isGameOver() {
@@ -316,9 +323,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		while(movesLeft > 0) {
       // in this loop, we need to get each players move, and deal with it
 			//first need to tell player we're waiting for their move
-			System.out.println(movesLeft + "recieving player move");
       playerMoves[i] = getPlayerMove(i);
-			System.out.println("player move recieved");
 			switch(playerMoves[i].getMove()) {
 				case RAISE:
 					if(!betFunction(i)) {//if they couldn't bet, the function returns false and there's one less player playing
@@ -341,9 +346,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				default:
 					break;
 			}
-			System.out.println(movesLeft);
 			movesLeft--;
-			System.out.println(movesLeft);
 			
 			toPlayer[i].writeObject(table);
 			toPlayer[i].writeObject(players[i]);//just send the client the entire player

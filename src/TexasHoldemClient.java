@@ -1,4 +1,9 @@
 import java.io.IOException;
+import static java.util.concurrent.TimeUnit.*;
+//import java.lang.Object.Enum<TimeUnit>;
+import java.util.concurrent.*;
+//import java.util.concurrent.TimeUnit.*;
+//import java.util.concurrent.TimeUnit;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -48,6 +53,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
     private Button btnTest = new Button();
     private Text txtNotify = new Text();
     private Text txtNotify2 = new Text(); 
+	private GraphicsContext gc;
     //private Text timer = new Text();
 	
 	public static void main(String[] args) {
@@ -62,7 +68,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
     
         primaryStage.setTitle("Texas Hold'em");
         Canvas canvas = new Canvas(1231,781);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
         Group root = new Group();
         Scene scene = new Scene(root, 1231, 781);
 
@@ -194,6 +200,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				System.out.println("waiting for table");
 				table = (Table) fromServer.readObject(); //Table with blank cards for opponents
 				System.out.println("table recieved\nwaiting for player");
+				player = new Player();
+				player.printout();
 				player = (Player) fromServer.readObject();//recieve the player info from the server
 				System.out.println("player recieved");
 				player.printout();
@@ -207,6 +215,10 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				objectRecieved = false;
 			}
 		}
+
+		renderGameScreen(gc);
+		table.render(gc);
+    player.renderHand(gc);
 	}
 
     public void incrementPlayerCount() {
@@ -306,13 +318,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private void sendTurn(Send send) {
 		boolean didSend	= false;
 		int count = 0;
-				System.out.println("1");
 		while (!didSend && count < 10) {
-				System.out.println("2");
 			try {
-				System.out.println("3");
 				toServer.writeObject(send);
-				System.out.println("4");
 				didSend = true;
 				System.out.println("turn sent");
 			} catch (Exception ex) {
@@ -322,6 +330,23 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		}
 	}
 
+	private class RefreshGameWindow {
+		private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+		public void refreshGameWindowMethod() {
+			final Runnable refresher = new Runnable() {
+				public void run() {
+					renderGameScreen(gc);
+					table.render(gc);
+					player.renderHand(gc);
+					System.out.println("screen refreshed"); }
+			};
+			final ScheduledFuture<?> refreshHandle = scheduler.scheduleAtFixedRate(refresher, 1, 1, SECONDS);//run every second
+			scheduler.schedule(new Runnable() {
+				public void run() { refreshHandle.cancel(true); }
+			}, 60 * 60 * 60, SECONDS); //run for 60 hours
+		}
+	}
 	
 	private void exit() {
 		System.exit(1);

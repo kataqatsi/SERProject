@@ -52,7 +52,15 @@ public class Table implements Serializable {
     }
     
     public Table(Player[] p, Card[] f) {
-        player = p;
+        //player = p;
+				player = new Player[p.length];
+				for (int i = 0; i < player.length; i++) {
+					//p[i].printout();
+					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+					//player[i].printout();
+					//player[i].clearCards();
+					//player[i].printout();
+				}
         flop = f;
         
         //set turn to blank card
@@ -79,7 +87,15 @@ public class Table implements Serializable {
     }
     
     public Table(Player[] p, Card[] f, Card t) {
-        player = p;
+        //player = p;
+				player = new Player[p.length];
+				for (int i = 0; i < player.length; i++) {
+					//p[i].printout();
+					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+					//player[i].printout();
+					//player[i].clearCards();
+					//player[i].printout();
+				}
         flop = f;
         turn = t;
         
@@ -102,7 +118,15 @@ public class Table implements Serializable {
     }
     
     public Table(Player[] p, Card[] f, Card t, Card r) {
-        player = p;
+        //player = p;
+				player = new Player[p.length];
+				for (int i = 0; i < player.length; i++) {
+					//p[i].printout();
+					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+					//player[i].printout();
+					//player[i].clearCards();
+					//player[i].printout();
+				}
         flop = f;
         turn = t;
         river = r;
@@ -121,13 +145,13 @@ public class Table implements Serializable {
     public void setPlayerCards() {
     		for (int i = 0; i < player.length; i++) {
     			card = new Card();
-    	        card.setSuit(Suit.CARDBACK);
-    	        player[i].setCard(card);
+    	    card.setSuit(Suit.CARDBACK);
+    	    player[i].setCard(card);
     	        
-    	        //second statement required to give another card
-    	        card = new Card();
-    	        card.setSuit(Suit.CARDBACK);
-    	        player[i].setCard(card);
+    	    //second statement required to give another card
+    	    card = new Card();
+    	    card.setSuit(Suit.CARDBACK);
+    	    player[i].setCard(card);
     		}
     }
     

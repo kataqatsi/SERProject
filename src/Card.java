@@ -25,7 +25,7 @@ public class Card  implements Serializable, TexasHoldemConstants {
 		
 	public Card() {
 		this.value = 0;
-		this.suit = Suit.SPADES;
+		this.suit = Suit.CARDBACK;
 		stringOfSuit = "not set";
 	}
 	

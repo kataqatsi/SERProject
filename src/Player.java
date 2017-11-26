@@ -11,10 +11,10 @@ public class Player implements Serializable {
 	private String username;
 	private int chipCount;
 	private int bet;
-	Card card1;
-	Card card2;
-	ObjectOutputStream out;
-	ObjectInputStream in;
+	private Card card1;
+	private Card card2;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
 
 	public void printout() {
 		//System.out.println("chips:" + chipCount);
