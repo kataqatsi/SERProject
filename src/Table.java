@@ -7,6 +7,8 @@ public class Table implements Serializable {
     Card turn;
     Card river;
     Card card;
+    HandScore score;
+    
     
     public Table(Player[] p) {
         player = p;
@@ -107,8 +109,9 @@ public class Table implements Serializable {
         turn.setY(340);
         river.setX(680);
         river.setY(340);
+        
     }
-    
+   
     public void setPlayerCards() {
     		for (int i = 0; i < player.length; i++) {
     			card = new Card();

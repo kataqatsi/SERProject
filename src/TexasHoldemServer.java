@@ -4,19 +4,12 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
-
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class TexasHoldemServer extends Application implements TexasHoldemConstants{
 	ObjectOutputStream toPlayer[];
@@ -29,7 +22,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	Card flop[];
 	Card turn;
 	Card river;
-	int time = 10;
 	
 	int maxPlayers = 2;
 	int numOfPlayers = 0;
@@ -65,7 +57,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					for (int i = 0; i < maxPlayers; i++) {
 						socket[i] = serverSocket.accept();
 						log.appendText(new Date() + ": Player " + (i+1) + " joined session " + sessionNo + '\n');
-						log.appendText("Player " + (i+1) +"'s IP address " + socket[i].getInetAddress().getHostAddress() + '\n');
+						log.appendText("Player " + (i+1) +"'s IP address " +socket[i].getInetAddress().getHostAddress() + '\n');
 						numOfPlayers++;
 					}
 					
@@ -89,27 +81,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							//Game loop
 							//while(stillPlaying) {
 								sendTable(); //Sends client blank cards all players
-								dealCards(); //Sends client 2 cards
-								
-								
-								EventHandler<ActionEvent> eventHandler = e -> {
-						            if (time == 10) {
-						            		log.appendText("Player has " +time + " seconds to make a decision\n");
-						            }
-						            if (time == 5) {
-					            			log.appendText("Player has " +time + " seconds to make a decision\n");
-						            }
-						            if (time == 0) {
-						            		log.appendText("Player's time is up!\n");
-						            }
-						            time--;  
-						        };
-								
-								Timeline animation = new Timeline(
-						        	      new KeyFrame(Duration.millis(1000), eventHandler));
-						        	animation.setCycleCount(Timeline.INDEFINITE);
-						        	animation.play();
-								
+								startNewGame(); //Sends client 2 cards
 								sendTableFlop(); //Sends client blank cards+flop
 								sendTableFlopTurn(); //Sends client blank cards+flop+turn
 								sendTableFlopTurnRiver(); //Sends client blank cards+flop+turn+river
@@ -126,7 +98,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		;}).start();	
 	}
 	
-	public void dealCards() throws IOException {
+	public void startNewGame() throws IOException {
 		//Creates new Deck
 		d = new Deck();
 		d.shuffle();
@@ -189,11 +161,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	
 	public void sendTableFlopTurnRiver() throws IOException {
 		river = d.drawCard();
-		
+
 		table = new Table(players, flop, turn, river);
 		table.setPlayerCards();
+
 		for (int i = 0; i < numOfPlayers; i++) {
 			toPlayer[i].writeObject(table);
+			
 		}	
 	}
 	

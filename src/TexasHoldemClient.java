@@ -114,7 +114,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
         btnFold.setLayoutY(720);
         btnFold.setOnAction(e -> fold());
         
-        btnTest.setText("~TEST BUTTON~");
+        btnTest.setText("Check Score");
         btnTest.setLayoutX(800);
         btnTest.setLayoutY(720);
         btnTest.setOnAction(e -> test());   
@@ -142,12 +142,13 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			table = (Table) fromServer.readObject(); //Table with flop + blank cards for opponents
 			table = (Table) fromServer.readObject(); //Table with flop + turn + blank cards for opponents
 			table = (Table) fromServer.readObject(); //Table with flop + turn + river + blank cards for opponents
-			
+	        HandScore score;
 			table.render(gc);
             player.renderHand(gc);
+	        
         } catch (Exception ex) {
         	
-        }     
+        }   
     }
 	   
     public void incrementPlayerCount() {
@@ -213,13 +214,10 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	}
 	
 	private void test() {
-        if (myTurn == true) {
-	        displayNotification(txtNotify, txtNotify2, "It's Your Turn!");
-	        myTurn = false;
-        } else {
-        		displayNotification(txtNotify, txtNotify2, "Wait for your turn...");
-        		myTurn = true;
-        }	
+		HandScore score;
+		score = new HandScore(player.getCard1(),player.getCard2(), table.flop[0], table.flop[1], table.flop[2], table.turn, table.river);
+		player.setScore(score.getScore());
+		displayNotification(txtNotify, txtNotify2, Integer.toString(player.getScore()));
 	}
 	
 	private void fold() {

@@ -9,6 +9,7 @@ public class Player implements Serializable {
 	private int seatNumber;
 	private String username;
 	private int chipCount;
+	private int score;
 	Card card1;
 	Card card2;
 	ObjectOutputStream out;
@@ -20,6 +21,7 @@ public class Player implements Serializable {
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
+		score = 0;
 	}
 	
 	public Player(int num) {
@@ -27,6 +29,15 @@ public class Player implements Serializable {
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
+		score = 0;
+	}
+	
+	public void setScore(int score1) {
+		score = score1;
+	}
+	
+	public int getScore() {
+		return score;
 	}
 	
 	public void setChips(int chips) {
