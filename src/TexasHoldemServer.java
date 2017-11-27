@@ -186,77 +186,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 	}
 
-		public void dealCards() throws IOException {
-			//Creates new Deck
-			d = new Deck();
-			d.shuffle();
-			d.shuffle();
-			d.shuffle();
-			Card c = new Card();
-			
-			//Deal cards to each player
-			for (int i = 0; i < numOfPlayers; i++) {
-				c = d.drawCard();
-				players[i].setCard(c);
-				toPlayer[i].writeObject(c);
-				c = d.drawCard();
-				players[i].setCard(c);
-				toPlayer[i].writeObject(c);
-			}
-		}
-		
-		public void assignSeats() throws IOException {
-			//seatNum set to 3 for testing purposes
-			int seatNum = 3;
-			for (int i = 0; i < numOfPlayers; i++) {
-				players[i] = new Player(seatNum);
-				toPlayer[i].writeInt(seatNum);
-				seatNum++;
-			}
-			seatNum = 3;	
-		}
-		
-		public void sendTable() throws IOException {
-			table = new Table(players);
-			table.setPlayerCards();
-			for (int i = 0; i < numOfPlayers; i++) {
-				toPlayer[i].writeObject(table);
-			}	
-		}
-		
-		public void sendTableFlop() throws IOException {
-			flop = new Card[3];
-			flop[0] = d.drawCard();
-			flop[1] = d.drawCard();
-			flop[2] = d.drawCard();
-			
-			table = new Table(players, flop);
-			table.setPlayerCards();
-			for (int i = 0; i < numOfPlayers; i++) {
-				toPlayer[i].writeObject(table);
-			}	
-		}
-		
-		public void sendTableFlopTurn() throws IOException {
-			turn = d.drawCard();
-			
-			table = new Table(players, flop, turn);
-			table.setPlayerCards();
-			for (int i = 0; i < numOfPlayers; i++) {
-				toPlayer[i].writeObject(table);
-			}	
-		}
-		
-		public void sendTableFlopTurnRiver() throws IOException {
-			river = d.drawCard();
-			
-			table = new Table(players, flop, turn, river);
-			table.setPlayerCards();
-			for (int i = 0; i < numOfPlayers; i++) {
-				toPlayer[i].writeObject(table);
-			}	
-		}
-	}
 	public void dealCards() throws IOException {
 		//Creates new Deck
 		d = new Deck();
@@ -429,10 +358,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 	}
 
-	public void playerDisconnected(int playerNum) {//deal with a player being disconnected
-
-	}
-
 	public Send getPlayerMove(int playerNum) {
 		boolean recieved = false;
 		Send returnObject = new Send();
@@ -451,4 +376,5 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 		return returnObject;
   }
+	}
 }

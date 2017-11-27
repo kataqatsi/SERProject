@@ -7,6 +7,7 @@ public class Table implements Serializable {
     Card turn;
     Card river;
     Card card;
+		int playerNumTurn;
 		int pot;
     
     public Table(Player[] p) {
