@@ -315,23 +315,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		}
 	}
 
-	private class RefreshGameWindow {
-		private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-		public void refreshGameWindowMethod() {
-			final Runnable refresher = new Runnable() {
-				public void run() {
-					renderGameScreen(gc);
-					table.render(gc);
-					player.renderHand(gc);
-					System.out.println("screen refreshed"); }
-			};
-			final ScheduledFuture<?> refreshHandle = scheduler.scheduleAtFixedRate(refresher, 1, 1, SECONDS);//run every second
-			scheduler.schedule(new Runnable() {
-				public void run() { refreshHandle.cancel(true); }
-			}, 60 * 60 * 60, SECONDS); //run for 60 hours
-		}
-	}
 	
 	public void joinGame() {
 		player = new Player();
