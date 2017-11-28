@@ -9,6 +9,22 @@ public class Table implements Serializable {
     Card card;
 		int playerNumTurn;
 		int pot;
+
+		public Card getFlop1() {
+			return flop[0];
+		}
+		public Card getFlop2() {
+			return flop[1];
+		}
+		public Card getFlop3() {
+			return flop[2];
+		}
+		public Card getTurn() {
+			return turn;
+		}
+		public Card getRiver() {
+			return river;
+		}
     
     public Table(Player[] p) {
         //player = p;

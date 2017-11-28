@@ -55,6 +55,10 @@ public class Player implements Serializable {
 		chipCount = chips;
 	}
 	
+	public void addChips(int chips) {
+		chipCount += chips;
+	}
+	
 	public int getChips() {
 		return chipCount;
 	}
