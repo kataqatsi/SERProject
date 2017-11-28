@@ -15,6 +15,7 @@ public class Player implements Serializable {
 	private Card card2;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private int score;
 
 	public void printout() {
 		//System.out.println("chips:" + chipCount);
@@ -30,6 +31,7 @@ public class Player implements Serializable {
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
+		score = 0;
 	}
 	
 	public Player(int num) {
@@ -38,6 +40,7 @@ public class Player implements Serializable {
 		chipCount = 500;
 		card1 = new Card();
 		card2 = new Card();
+		score = 0;
 	}
 
 	public Player(int num, int chips) {
@@ -193,6 +196,14 @@ public class Player implements Serializable {
 
 	public int getBet() {
 		return bet;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public int getScore() {
+		return score;
 	}
 }
 
