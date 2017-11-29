@@ -216,14 +216,16 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		for (int i = 0; i < numOfPlayers; i++) {
 			//players[i] = new Player(i);
 			players[i] = new Player(seatNum);
+			toPlayer[i].writeObject(players[i]);
 			seatNum++;
 		}
+		
 	}
 	
 	public void sendTable() throws IOException {
 			//players[0].printout();
 			//players[0].printout();
-		table.setPlayerCards();
+			table.setPlayerCards();
 			//players[0].printout();
 		for (int i = 0; i < numOfPlayers; i++) {
 			//players[i].printout();
