@@ -161,17 +161,10 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 								loopPlayerTurn((dealer+1)%numOfPlayers);
 								System.out.println("river");
 
-								//need to calculate round winner and give them the pot
-								//that'll be easy once Jacob has the scoring thing done
-								//
-								//literally just something like players[winnerNum].addChips(pot);
-								//and pot = 0;
-								//may need to make sure those functions exist but you get the idea
 
-								//need to implement way for game to end
-								//probably if someone disconnects or runs out of money?
-								//or if there's only one person with money left
-								//nevermind got it
+								int winner=checkWinner();
+								players[winner].addChips(pot);
+								pot = 0;
 
 								dealer++;
 								dealer %= numOfPlayers;
@@ -184,6 +177,25 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		} catch(Exception ex) {
 			System.out.println(ex);
 		}
+	}
+
+	public int checkWinner() {
+		HandScore score[] = new HandScore[numOfPlayers];
+		//int intScore[] = new int[numOfPlayers];
+		int highScore = 0;
+		int winner = 0;
+		for(int i = 0; i < numOfPlayers; i++) {
+			score[i] = new HandScore(players[i].getCard1(), players[i].getCard2(), table.getFlop1(), table.getFlop2(), table.getFlop3(), table.getTurn(), table.getRiver());
+			//intScore[i] = score[i].getScore();
+		}
+		for(int i = 0; i < numOfPlayers; i++) {
+			if(score[i].getScore() >= highScore) {
+				winner = i;
+				highScore = score[i].getScore();
+			}
+		}
+
+		return winner;
 	}
 
 	public void dealCards() throws IOException {
