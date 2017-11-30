@@ -1,8 +1,7 @@
-
 public class Deck {
 	private int size = 52;
 	private Card cards[] = new Card[size];
-	
+
 	//Generate Deck
 	public Deck() {
 		//Hearts A-K
@@ -30,7 +29,7 @@ public class Deck {
 			cards[i].setValue(i-38);
 		}
 	}
-	
+
 	public void shuffle() {
 		Card temp = new Card();
 		for (int i = 0; i < 10000; i ++) {
@@ -41,7 +40,7 @@ public class Deck {
 			cards[rand2] = temp;
 		}
 	}
-	
+
 	public Card drawCard() {
 		Card topCard = cards[0];
 		for (int i = 0; i < size-1; i++) {
@@ -50,7 +49,7 @@ public class Deck {
 		size = size - 1;
 		return topCard;
 	}
-	
+
 	public String toString() {
 		String buffer = "";
 		for(int i = 0; i < size; i++) {

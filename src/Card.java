@@ -9,29 +9,29 @@ enum Suit {HEARTS, DIAMONDS, CLUBS, SPADES, CARDBACK}
 public class Card  implements Serializable, TexasHoldemConstants {
 	private int value;
 	private Suit suit;
-	
+
 	//used in toString()
 	private String stringOfSuit;
-	
+
 	//used to draw with JavaFX
 	int xPos = 100;
 	int yPos = 100;
-	
+
 	//cut position on sprite sheet
 	double spriteX = 0;
 	double spriteY = 0;
 	int height = 64;
 	int width = 44;
-		
+
 	public Card() {
 		this.value = 0;
 		this.suit = Suit.CARDBACK;
 		stringOfSuit = "not set";
 	}
-	
+
 	public void setSuit(Suit s) {
 		this.suit = s;
-		
+
 		//sets toString() and coordinate for sprite sheet
 		switch(this.suit) {
 			case HEARTS:
@@ -57,15 +57,15 @@ public class Card  implements Serializable, TexasHoldemConstants {
 				break;
 		}	
 	}
-	
+
 	public Suit getSuit() {
 		return this.suit;
 	}
-	
-	
+
+
 	public void setValue(int v) {
 		this.value = v;
-		
+
 		// sets coordinate for sprite sheet
 		if (this.value > 4) {
 			spriteX = (v * 52) - 55;
@@ -75,27 +75,27 @@ public class Card  implements Serializable, TexasHoldemConstants {
 			spriteX = (v * 52) - 52;
 		}
 	}
-	
-	
+
+
 	public int getValue() {
 		return this.value;
 	}
-	
+
 	public void setX(int x) {
 		xPos = x;
 	}
-	
+
 	public void setY(int y) {
 		yPos = y;
 	}
-	
+
 	//Draws card at the position
 	public void render(GraphicsContext gc) {
 		Image spriteSheet = new Image("playing_cards.png");
 		gc.drawImage(spriteSheet, spriteX, spriteY, width, height, xPos, yPos, width, height);
 	}
-	
+
 	public String toString() {
 		return this.value + stringOfSuit;
 	}
- }
+}
