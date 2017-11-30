@@ -1,7 +1,7 @@
 import java.io.Serializable;
 public class Send implements Serializable, TexasHoldemConstants {
-	private int move; 
-	private int bet;
+	public int move; 
+	public int bet;
 	//moves:
 	//	CHECK = 11;
 	//	CALL = 12;

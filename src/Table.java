@@ -7,6 +7,7 @@ public class Table implements Serializable {
     Card turn;
     Card river;
     Card card;
+    int stage;
 		int playerNumTurn;
 		int pot;
 
@@ -28,6 +29,7 @@ public class Table implements Serializable {
     
     public Table(Player[] p) {
         //player = p;
+    		stage = 0;
 				player = new Player[p.length];
 				for (int i = 0; i < player.length; i++) {
 					//p[i].printout();
@@ -70,6 +72,7 @@ public class Table implements Serializable {
     
     public Table(Player[] p, Card[] f) {
         //player = p;
+    		stage = 1;
 				player = new Player[p.length];
 				for (int i = 0; i < player.length; i++) {
 					//p[i].printout();
@@ -105,6 +108,7 @@ public class Table implements Serializable {
     
     public Table(Player[] p, Card[] f, Card t) {
         //player = p;
+    		stage = 2;
 				player = new Player[p.length];
 				for (int i = 0; i < player.length; i++) {
 					//p[i].printout();
@@ -135,6 +139,7 @@ public class Table implements Serializable {
     }
     
     public Table(Player[] p, Card[] f, Card t, Card r) {
+    		stage = 3;
         //player = p;
 				player = new Player[p.length];
 				for (int i = 0; i < player.length; i++) {
@@ -189,5 +194,9 @@ public class Table implements Serializable {
         		player[i].renderHand(gc);
         }
         
+    }
+    
+    public int getStage() {
+    		return stage;
     }
 }

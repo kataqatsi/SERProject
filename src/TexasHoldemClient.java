@@ -43,7 +43,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private Player player;
 	private boolean gameOver = false;
 	private int time = 15;
-	private Send send;
+	private Send send = new Send();
 	private Table table;
 	private TextField inputBetAmount = new TextField();
 	private Button btnExit = new Button();
@@ -255,7 +255,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		displayNotification(txtNotify, txtNotify2, "You Check Your Hand");
 		send = new Send(CHECK);
 		//sendTurn(new Send(CHECK));
-		receiveObjects();
 	}
 	
 	private void call() {
@@ -266,7 +265,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		//}	else {
 			//displayNotification(txtNotify, txtNotify2, "It is not your turn yet");
 		//}
-		receiveObjects();
 	}
 	
 	public void test() {
@@ -283,7 +281,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		displayNotification(txtNotify, txtNotify2, "You Have Folded");
 		//sendTurn(new Send(FOLD));
 		send = new Send(FOLD);
-		receiveObjects();
 	}
 	
 	public void raise() {
@@ -294,7 +291,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			//sendTurn(new Send(RAISE, Integer.parseInt(inputBetAmount.getText())));
 			send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
 		}
-		receiveObjects();
 	}
 
 
@@ -316,6 +312,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			} catch (Exception ex) {
 				System.out.println("failed to send I guess");
 			}
+			send = new Send();
 			//count++;
 		//}
 	}
@@ -382,9 +379,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
             		timer.setText("END");
             		time = 16;
             		timer.setFill(Color.YELLOW);
-            		if(player.getTurn()) {
+            		//if(player.getTurn()) {
             			sendTurn(send);
-            		}
+            		//}
             		receiveObjects();
             		//send = new Send(TIMEISUP);
             }
