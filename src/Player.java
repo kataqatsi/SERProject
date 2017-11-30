@@ -209,5 +209,13 @@ public class Player implements Serializable {
 	public int getScore() {
 		return score;
 	}
+	
+	public boolean getTurn() {
+		return isTurn;
+	}
+	
+	public void setTurn(boolean t) {
+		isTurn = t;
+	}
 }
 

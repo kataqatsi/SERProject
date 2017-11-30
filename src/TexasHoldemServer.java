@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.Date;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 //import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -36,6 +37,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	int pot;
 	int movesLeft;
 	int currentBet;
+	int playerNumTurn;
 	//int time = 10;
 	
 	int numOfPlayers = 0;
@@ -94,7 +96,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		private Card turn;
 		private Card river;
 		private int numOfPlayers;
-		private int time = 10;
+		private int time = 15;
 
 		public HandleAClient(Socket[] socket) {
 			this.socket = socket;
@@ -131,7 +133,35 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							//while(stillPlaying) {//this loop is one round, so everytime it loops it is a new flop.
 							while(!isGameOver()) {//this loop is one round, so everytime it loops it is a new flop.
 								//run it while the game isn't over
-
+								EventHandler<ActionEvent> eventHandler = e -> {
+									if ((time % 2) == 0) {
+										try {
+											sendTable();
+										} catch (IOException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+									}
+						            if (time == 10) {
+						            		log.appendText("Player has " +time + " seconds to make a decision\n");
+						            }
+						            if (time == 5) {
+					            			log.appendText("Player has " +time + " seconds to make a decision\n");
+						            }
+						            if (time == 0) {
+						            		log.appendText("Player's time is up!\n");
+						            		
+						            		time = 16;
+						            		
+						            }
+						            time--;  
+						        };
+								
+								Timeline animation = new Timeline(
+						        	      new KeyFrame(Duration.millis(1000), eventHandler));
+						        	animation.setCycleCount(Timeline.INDEFINITE);
+						        	animation.play();
+						        	
 								//NEED TO UPDATE ALL SENDTABLE FUNCTIONS TO ALSO SEND THE INDIVIDUAL PLAYERS, AND UPDATE CLIENT TO RECIEVE BOTH OBJECTS
 								//and in general sync up the server and client sending/recieving
 								dealCards();
@@ -335,10 +365,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		int playersPlaying = numOfPlayers;
 		int i = startingPlayer;
     //for(int i = 0; i < forLoopCounter; i++) {
+		players[i].setTurn(true);
+		sendTable();
 		while(movesLeft > 0) {
       // in this loop, we need to get each players move, and deal with it
 			//first need to tell player we're waiting for their move
-      playerMoves[i] = getPlayerMove(i);
+			
+			playerMoves[i] = getPlayerMove(i);
 			switch(playerMoves[i].getMove()) {
 				case RAISE:
 					if(!betFunction(i)) {//if they couldn't bet, the function returns false and there's one less player playing
@@ -362,14 +395,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					break;
 			}
 			movesLeft--;
-			
-			toPlayer[i].writeObject(table);
-			toPlayer[i].writeObject(players[i]);//just send the client the entire player
-
-
+			players[i].setTurn(false);
 			i++;
 			i %= numOfPlayers;//lets us always loop through each player even when we need to go through multiple times in the case of a raise
+			players[i].setTurn(true);
+			sendTable();
 		}
+		
 	}
 
 	public Send getPlayerMove(int playerNum) {
