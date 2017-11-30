@@ -218,4 +218,3 @@ public class Player implements Serializable {
 		isTurn = t;
 	}
 }
-
