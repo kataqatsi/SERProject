@@ -150,7 +150,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 						            }
 						            if (time == 0) {
 						            		log.appendText("Player's time is up!\n");
-						            		
+														handleTurn();
 						            		time = 16;
 						            		
 						            }
@@ -174,6 +174,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 								playerMoves[(dealer+1)%numOfPlayers] = new Send(RAISE, 5);//little blind
 								betFunction((dealer+1)%numOfPlayers);
 								playerMoves[(dealer+2)%numOfPlayers] = new Send(RAISE, 10);//big blind
+								
 								betFunction((dealer+2)%numOfPlayers);
 								
 								loopPlayerTurn((dealer+3)%numOfPlayers);//preflop
@@ -360,6 +361,44 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		return false;
 	}
 
+	public void handleTurn() {
+		//while(movesLeft > 0) {
+      // in this loop, we need to get each players move, and deal with it
+			//first need to tell player we're waiting for their move
+			
+			
+			playerMoves[playerNumTurn] = getPlayerMove(playerNumTurn);
+			switch(playerMoves[playerNumTurn].getMove()) {
+				case RAISE:
+					if(!betFunction(playerNumTurn)) {//if they couldn't bet, the function returns false and there's one less player playing
+						playersPlaying--;
+					}
+					break;
+				case CALL:
+					if(!betFunction(playerNumTurn)) {//if they couldn't bet, the function returns false and there's one less player playing
+						playersPlaying--;
+					}
+					break;
+				case TIMEISUP:
+				case FOLD:
+					players[playerNumTurn].clearCards();
+					playersPlaying--;
+				case CHECK:
+					if(players[playerNumTurn].getBet() != currentBet) {
+						playersPlaying--;//they tried to check when they weren't allowed to, out of this round
+					}
+				default:
+					break;
+			}
+			movesLeft--;
+			players[playerNumTurn].setTurn(false);
+			playerNumTurn++;
+			playerNumTurn %= playersPlaying;//lets us always loop through each player even when we need to go through multiple times in the case of a raise
+			//playerNumTurn %= numOfPlayers;//lets us always loop through each player even when we need to go through multiple times in the case of a raise
+			players[playerNumTurn].setTurn(true);
+			sendTable();
+		//}
+	}
 	public void loopPlayerTurn(int startingPlayer) throws IOException {
 		movesLeft = numOfPlayers;
 		int playersPlaying = numOfPlayers;
@@ -401,7 +440,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			players[i].setTurn(true);
 			sendTable();
 		}
-		
 	}
 
 	public Send getPlayerMove(int playerNum) {
