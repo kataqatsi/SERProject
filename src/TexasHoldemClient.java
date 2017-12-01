@@ -177,7 +177,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		}
 		
 		for(int i = 0; i < 10; i++) {
-			//txtPlayerChips[i].setText(""+table.playerChips[i]);
+			txtPlayerChips[i].setText(""+table.getPlayerChips()[i]);
 		}
 	}
 
@@ -380,68 +380,43 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
 		
+		for(int i = 0; i < 10; i++) {
+			txtPlayerChips[i] = new Text();
+			txtPlayerChips[i].setFill(Color.GOLD);
+			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
+		}
 		
-		txtPlayerChips[0] = new Text();
 		txtPlayerChips[0].setX(100);
 		txtPlayerChips[0].setY(100);
-		txtPlayerChips[0].setFill(Color.GOLD);
-		txtPlayerChips[0].setFont(Font.font(null, FontWeight.BOLD, 24));
 		txtPlayerChips[0].setCache(true);
 		txtPlayerChips[0].setText("Test");
 		
-		txtPlayerChips[1] = new Text();
 		txtPlayerChips[1].setX(100);
 		txtPlayerChips[1].setY(100);
-		txtPlayerChips[1].setFill(Color.GOLD);
-		txtPlayerChips[1].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[2] = new Text();
 		txtPlayerChips[2].setX(200);
 		txtPlayerChips[2].setY(200);
-		txtPlayerChips[2].setFill(Color.GOLD);
-		txtPlayerChips[2].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[3] = new Text();
 		txtPlayerChips[3].setX(200);
 		txtPlayerChips[3].setY(200);
-		txtPlayerChips[3].setFill(Color.GOLD);
-		txtPlayerChips[3].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[4] = new Text();
 		txtPlayerChips[4].setX(200);
 		txtPlayerChips[4].setY(200);
-		txtPlayerChips[4].setFill(Color.GOLD);
-		txtPlayerChips[4].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[5] = new Text();
 		txtPlayerChips[5].setX(200);
 		txtPlayerChips[5].setY(200);
-		txtPlayerChips[5].setFill(Color.GOLD);
-		txtPlayerChips[5].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[6] = new Text();
 		txtPlayerChips[6].setX(200);
 		txtPlayerChips[6].setY(200);
-		txtPlayerChips[6].setFill(Color.GOLD);
-		txtPlayerChips[6].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[7] = new Text();
 		txtPlayerChips[7].setX(200);
 		txtPlayerChips[7].setY(200);
-		txtPlayerChips[7].setFill(Color.GOLD);
-		txtPlayerChips[7].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[8] = new Text();
 		txtPlayerChips[8].setX(200);
 		txtPlayerChips[8].setY(200);
-		txtPlayerChips[8].setFill(Color.GOLD);
-		txtPlayerChips[8].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
-		txtPlayerChips[9] = new Text();
 		txtPlayerChips[9].setX(200);
 		txtPlayerChips[9].setY(200);
-		txtPlayerChips[9].setFill(Color.GOLD);
-		txtPlayerChips[9].setFont(Font.font(null, FontWeight.BOLD, 24));
 		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
