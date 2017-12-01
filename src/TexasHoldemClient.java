@@ -154,14 +154,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				/*if(player.getCard1().getValue() == 0) {
 					didReceive = false;
 					}*/
-				if(table.getPlayerNumTurn() == i) {
-					txtPlayerChips[i].setFill(Color.MAROON);
-				} else {
-					txtPlayerChips[i].setFill(Color.GOLD);
-				}
-				txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
-			}
-		} catch (Exception ex) {
+			} catch (Exception ex) {
 				//at this point the server must have been disconnected, so whoever has the most chips wins
 				int largest = 0;
 				for(int i = 0; i < table.getPlayerChips().length; i++) {
@@ -431,11 +424,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i] = new Text();
 			txtPlayerChips[i].setCache(true);
-			if(table.getPlayerNumTurn() == i) {
-				txtPlayerChips[i].setFill(Color.MAROON);
-			} else {
-				txtPlayerChips[i].setFill(Color.GOLD);
-			}
+			txtPlayerChips[i].setFill(Color.GOLD);
 			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 		}
 		

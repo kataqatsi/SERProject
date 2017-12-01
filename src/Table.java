@@ -12,7 +12,6 @@ public class Table implements Serializable {
 	int bet = 5;
     
 	int stage;
-	int playerNumTurn;
 	int pot;
 
 	public Card getFlop1() {
@@ -253,13 +252,5 @@ public class Table implements Serializable {
 
 		public int getBet() {
 			return bet;
-		}
-
-		public void setPlayerNumTurn(int playerNumTurn) {
-			this.playerNumTurn = playerNumTurn;
-		}
-
-		public int getPlayerNumTurn() {
-			return playerNumTurn;
 		}
 }
