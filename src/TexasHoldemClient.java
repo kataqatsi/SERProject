@@ -57,6 +57,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static Text txtNotify2 = new Text(); 
 	private static Text txtNotify3 = new Text();
 	private static Text txtNotify4 = new Text(); 
+	private Text txtPot = new Text();
 	private Text txtPlayerChips[] = new Text[10];
 	private Text timer = new Text();
 	private Canvas canvas;
@@ -175,6 +176,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			displayNotification(txtNotify, txtNotify2, "It's not your turn");
 		}
 		
+		txtPot.setText(""+table.getPot());
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i].setText(""+table.getPlayerChips()[i]);
 			txtPlayerChips[i].setVisible(true);
@@ -380,6 +382,12 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setText(""+ time);
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
+
+		txtPot.setCache(true);
+		txtPot.setFill(Color.GOLD);
+		txtPot.setFont(Font.font(null, FontWeight.BOLD, 24));
+		txtPot.setX(595);
+		txtPot.setY(450);
 		
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i] = new Text();
@@ -390,11 +398,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		txtPlayerChips[0].setX(100);
 		txtPlayerChips[0].setY(100);
-		//txtPlayerChips[0] = new Text();
-		//txtPlayerChips[0].setCache(true);
 		txtPlayerChips[0].setText("TestTESTTESTTEST");
-		//txtPlayerChips[0].setFill(Color.GOLD);
-		//txtPlayerChips[0].setFont(Font.font(null, FontWeight.BOLD, 24));
 		
 		
 		
@@ -515,6 +519,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		root2.getChildren().add(btnTest);
 		root2.getChildren().add(timer);
 		root2.getChildren().add(inputBetAmount);
+		root2.getChildren().add(txtPot);
 			//root.getChildren().add(txtPlayerChips[0]);
 			//root.getChildren().add(txtPlayerChips[1]);
 		for(int i = 0; i < 10; i++) {
