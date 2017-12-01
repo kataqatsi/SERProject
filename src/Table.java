@@ -8,7 +8,7 @@ public class Table implements Serializable {
     Card river;
     Card card;
     int playerChips[];
-		int handWinner;
+		int handWinner = -1;
     
     int stage;
 	int playerNumTurn;

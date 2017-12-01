@@ -143,7 +143,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			try {
 				//System.out.println("waiting for table");
 				table = (Table) fromServer.readObject(); //Table with blank cards for opponents
-				System.out.println("table recieved\nwaiting for player");
+				System.out.println("table recieved");
 				//player = new Player();
 				//player.printout();
 				player = (Player) fromServer.readObject();//receive the player info from the server
@@ -273,7 +273,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			}*/
 			//player = new Player(seatNum);
 		} catch (Exception ex) {
-			System.out.println("failed =========");
+			System.out.println("failed");
 			System.err.println(ex);
 		} 
 	}	

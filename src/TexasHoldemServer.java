@@ -162,7 +162,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							}
 							switch(table.getStage()) {
 								case 0:
-									winner = -1;
 									handleTurn();
 									System.out.println("HandleTurn case 0");
 									if(movesLeft == 0) {
@@ -177,6 +176,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									}	
 									break;
 								case 1:
+									winner = -1;
 									handleTurn();
 									System.out.println("HandleTurn case 1");
 									if(movesLeft == 0) {
@@ -191,6 +191,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									}	
 									break;
 								case 2:
+									winner = -1;
 									handleTurn();
 									System.out.println("HandleTurn case 2");
 									if(movesLeft == 0) {
@@ -206,6 +207,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									break;
 								case 3:
 									handleTurn();
+									winner = -1;
 									System.out.println("HandleTurn case 3");
 									if(movesLeft == 0) {
 										currentBet = 5;
@@ -339,14 +341,10 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			//players[0].printout();
 			//players[0].printout();
 			table.setPlayerCards();
-			System.out.println("table-setPlayerCard()");
 			incrementPlayerTurn();
 			System.out.println("moves left: " + movesLeft);
 			//players[0].printout();
-			if(winner >= 0) {
-				table.setHandWinner(winner);
-				winner = -1;
-			}
+			table.setHandWinner(winner);
 			for (int i = 0; i < numOfPlayers; i++) {
 				//players[i].printout();
 				if(players[i].getChips() == 0) {
@@ -355,10 +353,9 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				toPlayer[i].reset();
 				toPlayer[i].writeObject(table);
 				System.out.println("writeObject table to player " + i);
-				players[i].printout();
+				//players[i].printout();
 				toPlayer[i].writeObject(players[i]);//just send the client the entire player
 				System.out.println("writeObject Player to player " + i);
-				//System.out.println("-----");
 			}	
 		}
 
@@ -427,9 +424,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 
 		public void handleTurn() {
-			System.out.println("Getting Player Turn");
 			int turn = getPlayerTurn();
-			System.out.println("Got Player Turn");
 			if(players[turn].getChips() > 0) {
 				try {
 					System.out.println("Receiving Send object from player " + turn);
@@ -446,34 +441,27 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			if(isPlayerPlaying[turn]) {
 				switch(send.getMove()) {
 					case RAISE:
-						System.out.println("Received RAISE");
 						if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
 							playersPlaying--;
 						}
-						System.out.println("RAISE passed if statement");
 						break;
 					case CALL:
-						System.out.println("Received CALL");
 						if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
 							playersPlaying--;
 						}
-						System.out.println("CALL passed if statement");
 						break;
 					case TIMEISUP:
 					case FOLD:
-						System.out.println("Received FOLD/TIMEISUP");
 						players[turn].clearCards();
 						isPlayerPlaying[turn] = false;
 						playersPlaying--;
 						break;
 					case CHECK:
-						System.out.println("Received CHECK");
 						if(players[turn].getBet() != currentBet) {
 							players[turn].clearCards();
 							isPlayerPlaying[turn] = false;
 							playersPlaying--;//they tried to check when they weren't allowed to, out of this round
 						}
-						System.out.println("CHECK passed if statement");
 					default:
 						break;
 				}
