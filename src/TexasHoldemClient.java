@@ -383,13 +383,13 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i] = new Text();
+			txtPlayerChips[i].setCache(true);
 			txtPlayerChips[i].setFill(Color.GOLD);
 			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 		}
 		
 		txtPlayerChips[0].setX(100);
 		txtPlayerChips[0].setY(100);
-		txtPlayerChips[0].setCache(true);
 		txtPlayerChips[0].setText("Test");
 		
 		txtPlayerChips[1].setX(100);
