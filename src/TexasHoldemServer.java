@@ -121,7 +121,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				}
 				boolean stillPlaying = true;
 
-				assignSeats(); //Sends client seat number
+				assignSeats();
 				System.out.println("Assigned Seats");
 				startRound();
 				System.out.println("round " + roundCount + "started");
@@ -173,7 +173,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 											e1.printStackTrace();
 										}
 									}	
-
 									break;
 								case 2:
 									handleTurn();
