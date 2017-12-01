@@ -358,7 +358,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setText(""+ time);
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
-		receiveObjects();
+		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
 			if (time == 10) {
