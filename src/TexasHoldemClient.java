@@ -116,7 +116,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		root.getChildren().add(btnRaise);
 		root.getChildren().add(btnFold);
 		root.getChildren().add(btnTest);
-		//root.getChildren().add(timer);
 
 		this.primaryStage.setScene(scene);
 		this.primaryStage.show();
@@ -178,6 +177,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i].setText(""+table.getPlayerChips()[i]);
+			txtPlayerChips[i].setVisible(true);
+			//txtPlayerChips[i].setText("TESTING");
 		}
 	}
 
@@ -508,6 +509,12 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		root2.getChildren().add(btnTest);
 		root2.getChildren().add(timer);
 		root2.getChildren().add(inputBetAmount);
+			//root.getChildren().add(txtPlayerChips[0]);
+			//root.getChildren().add(txtPlayerChips[1]);
+		for(int i = 0; i < 10; i++) {
+			root2.getChildren().add(txtPlayerChips[i]);
+		}
+		//root.getChildren().add(timer);
 
 		primaryStage.setScene(scene2);
 		primaryStage.show();
