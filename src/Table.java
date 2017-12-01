@@ -33,9 +33,9 @@ public class Table implements Serializable {
         //player = p;
     		stage = 0;
 		player = new Player[p.length];
-		playerChips = new int[9];
+		playerChips = new int[10];
 		
-		for(int i = 0; i < 9; i++) {
+		for(int i = 0; i < 10; i++) {
 			playerChips[i] = 0;
 		}
 		
@@ -83,9 +83,9 @@ public class Table implements Serializable {
         //player = p;
     		stage = 1;
 		player = new Player[p.length];
-		playerChips = new int[9];
+		playerChips = new int[10];
 		
-		for(int i = 0; i < 9; i++) {
+		for(int i = 0; i < 10; i++) {
 			playerChips[i] = 0;
 		}
 		
@@ -126,9 +126,9 @@ public class Table implements Serializable {
         //player = p;
     		stage = 2;
 		player = new Player[p.length];
-		playerChips = new int[9];
+		playerChips = new int[10];
 		
-		for(int i = 0; i < 9; i++) {
+		for(int i = 0; i < 10; i++) {
 			playerChips[i] = 0;
 		}
 		
@@ -165,9 +165,9 @@ public class Table implements Serializable {
     		stage = 3;
         //player = p;
 		player = new Player[p.length];
-		playerChips = new int[9];
+		playerChips = new int[10];
 		
-		for(int i = 0; i < 9; i++) {
+		for(int i = 0; i < 10; i++) {
 			playerChips[i] = 0;
 		}
 		
