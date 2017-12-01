@@ -379,20 +379,13 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setText(""+ time);
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
-		txtPlayerChips[0] = new Text();
+		for(int i = 0; i < 10; i++) {
+			txtPlayerChips[i] = new Text();
+			txtPlayerChips[i].setFill(Color.WHITE);
+			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
+		}
 		txtPlayerChips[0].setX(200);
 		txtPlayerChips[0].setY(200);
-		txtPlayerChips[0].setFill(Color.WHITE);
-		txtPlayerChips[0].setFont(Font.font(null, FontWeight.BOLD, 24));
-		txtPlayerChips[1] = new Text();
-		txtPlayerChips[2] = new Text();
-		txtPlayerChips[3] = new Text();
-		txtPlayerChips[4] = new Text();
-		txtPlayerChips[5] = new Text();
-		txtPlayerChips[6] = new Text();
-		txtPlayerChips[7] = new Text();
-		txtPlayerChips[8] = new Text();
-		txtPlayerChips[9] = new Text();
 		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
