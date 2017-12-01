@@ -23,7 +23,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 
 	int roundCount = 0;
 	private Socket socket[];
-	private int maxPlayers = 2;
+	static private int maxPlayers = 2;
 	private TextArea log = new TextArea();
 	ObjectOutputStream toPlayer[];
 	ObjectInputStream fromPlayer[];
@@ -46,6 +46,12 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	int numOfPlayers = 0;
 
 	public static void main(String[] args) {
+		if(args.length > 0) {
+			int input = Integer.parseInt(args[0]);
+			if(input <= 10 || input >= 2) {
+				maxPlayers = input;
+			}
+		}
 		launch(args);
 	}
 
