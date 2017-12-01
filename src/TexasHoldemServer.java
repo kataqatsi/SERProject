@@ -107,7 +107,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			players = new Player[numOfPlayers];
 			toPlayer = new ObjectOutputStream[numOfPlayers];
 			fromPlayer = new ObjectInputStream[numOfPlayers];
-
 		}
 
 		public void run() {
@@ -127,13 +126,11 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				System.out.println("round " + roundCount + "started");
 				roundCount++;
 
-
 				//Game loop
 				try {
 					//while(!isGameOver()) {//this loop is one round, so everytime it loops it is a new flop.
 					//run it while the game isn't over
 
-					playersPlaying = numOfPlayers;
 					EventHandler<ActionEvent> eventHandler = e -> {
 						if (time == 10) {
 							log.appendText("Player has " +time + " seconds to make a decision\n");
@@ -154,6 +151,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 0");
 									if(movesLeft == 0) {
+										movesLeft = numOfPlayers;
 										try {
 											sendTableFlop();
 										} catch (IOException e1) {
@@ -166,6 +164,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 1");
 									if(movesLeft == 0) {
+										movesLeft = numOfPlayers;
 										try {
 											sendTableFlopTurn();
 										} catch (IOException e1) {
@@ -178,6 +177,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 2");
 									if(movesLeft == 0) {
+										movesLeft = numOfPlayers;
 										try {
 											sendTableFlopTurnRiver();
 										} catch (IOException e1) {
@@ -190,6 +190,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 3");
 									if(movesLeft == 0) {
+										movesLeft = numOfPlayers;
 										int winner=checkWinner();
 										players[winner].addChips(pot);
 										pot = 0;
@@ -230,6 +231,8 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 
 		public void startRound() {
+			movesLeft = numOfPlayers;
+			playersPlaying = numOfPlayers;
 			boolean success = false;
 			while(!success) {
 				try {
@@ -294,8 +297,14 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			for (int i = 0; i < numOfPlayers; i++) {
 				//players[i] = new Player(i);
 				players[i] = new Player(seatNum);
-				toPlayer[i].writeObject(players[i]);
+				//toPlayer[i].writeObject(players[i]);
 				seatNum++;
+			}
+
+			getPlayerTurn();
+			
+			for (int i = 0; i < numOfPlayers; i++) {
+				toPlayer[i].writeObject(players[i]);
 			}
 
 		}
@@ -305,6 +314,8 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			//players[0].printout();
 			table.setPlayerCards();
 			System.out.println("table-setPlayerCard()");
+			incrementPlayerTurn();
+			System.out.println("moves left: " + movesLeft);
 			//players[0].printout();
 			for (int i = 0; i < numOfPlayers; i++) {
 				//players[i].printout();
@@ -392,6 +403,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				System.out.println("ERROR");
 				//e1.printStackTrace();
 			}
+			//incrementPlayerTurn();
 
 			switch(send.getMove()) {
 				case RAISE:
@@ -423,7 +435,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					break;
 			}
 			movesLeft--;
-			incrementPlayerTurn();
+			//incrementPlayerTurn();
 		}
 
 		public int getPlayerTurn() {
@@ -439,7 +451,10 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		public void incrementPlayerTurn() {
 			int turn = getPlayerTurn();
 			players[turn].setTurn(false);
-			players[(turn+1) % numOfPlayers].setTurn(true);
+			System.out.println("no longer player " + turn + "'s turn");
+			turn++;
+			players[turn % numOfPlayers].setTurn(true);
+			System.out.println("player " + turn + "'s turn");
 		}
 	}
 }

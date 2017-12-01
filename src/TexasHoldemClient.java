@@ -42,7 +42,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	//private boolean myTurn = false;
 	private Player player;
 	private boolean gameOver = false;
-	private int time = 15;
+	private int time = 17;
 	private Send send = new Send();
 	private Table table;
 	private TextField inputBetAmount = new TextField();
@@ -150,6 +150,11 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				player.printout();
 				System.out.println();
 				didReceive = true;
+				if(player.getTurn()) {
+					displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+				} else {
+					displayNotification(txtNotify, txtNotify2, "It's not your turn");
+				}
 				/*if(player.getCard1().getValue() == 0) {
 					didReceive = false;
 					}*/
@@ -164,6 +169,11 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		renderGameScreen(gc2);
 		table.render(gc2);
 		player.renderHand(gc2);
+		if(player.getTurn()) {
+			displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+		} else {
+			displayNotification(txtNotify, txtNotify2, "It's not your turn");
+		}
 	}
 
 	public void incrementPlayerCount() {
@@ -241,10 +251,10 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 
 			//int seatNum = fromServer.readInt();
 			player = (Player) fromServer.readObject();
-			System.out.println("read player at seat number " + player.getSeatNum());
-			if(player.getSeatNum() == 1) {
+			System.out.println("read player at seat number " + player.getSeatNum()+"is it their turn?" + player.getTurn());
+			/*if(player.getSeatNum() == 1) {
 				player.setTurn(true);
-			}
+			}*/
 			//player = new Player(seatNum);
 		} catch (Exception ex) {
 			System.out.println("failed =========");
@@ -278,6 +288,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	public void test() {
 		if(player.getTurn()) {
 			displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+		} else {
+			displayNotification(txtNotify, txtNotify2, "It's not your turn");
 		}
 		renderGameScreen(gc2);
 		table.render(gc2);
@@ -363,11 +375,11 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
 		//receiveObjects();
-		if(player.getTurn()) {
-			displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
-		}
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
+			if(time == 17) {
+				receiveObjects();
+			}
 			if (time == 10) {
 				timer.setFill(Color.ORANGE);
 			}
@@ -384,10 +396,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 					sendTurn(send);
 				}
 				receiveObjects();
-				if(player.getTurn()) {
-					displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
-				}
-
 				//send = new Send(TIMEISUP);
 			}
 			time--;    
