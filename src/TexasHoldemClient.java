@@ -400,11 +400,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		txtPlayerChips[1].setX(100);
 		txtPlayerChips[1].setY(100);
-		txtPlayerChips[0].setCache(true);
 		
 		txtPlayerChips[2].setX(200);
 		txtPlayerChips[2].setY(200);
-		txtPlayerChips[0].setCache(true);
 		
 		txtPlayerChips[3].setX(200);
 		txtPlayerChips[3].setY(200);
