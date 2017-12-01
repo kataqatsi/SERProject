@@ -173,15 +173,15 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		if(player.getTurn()) {
 			if(table.getHandWinner() >= 0) {
 				if(table.getBet() == 0) {
-					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\nmake a move before\nthe timer runs out!");
+					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!");
 				} else {
-					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\n" + table.getBet() + " TO CALL\nmake a move before\nthe timer runs out!");
+					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\n" + table.getBet() + " TO CALL");
 				}
 			} else {
 				if(table.getBet() == 0) {
-					displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+					displayNotification(txtNotify, txtNotify2, "It's your turn!");
 				} else {
-					displayNotification(txtNotify, txtNotify2, "It's your turn!\n" + table.getBet() + " TO CALL\nmake a move before\nthe timer runs out!");
+					displayNotification(txtNotify, txtNotify2, "It's your turn!\n" + table.getBet() + " TO CALL");
 				}
 			}
 		} else {
@@ -193,9 +193,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		}
 		
 		txtPot.setText(""+table.getPot());
-		for(int i = 0; i < 10; i++) {
-			txtPlayerChips[i].setText("Player " + (i + 1) + "\n" + table.getPlayerChips()[i]);
-			txtPlayerChips[i].setVisible(true);
+		for(int i = 0; i < table.player.length; i++) {
+			txtPlayerChips[i].setText("Player " + (i + 1) + "\nChips: " + table.getPlayerChips()[i] + "\nBet: " + table.player[i].getBet());
 		}
 	}
 
@@ -423,40 +422,43 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i] = new Text();
+			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 			txtPlayerChips[i].setCache(true);
 			txtPlayerChips[i].setFill(Color.GOLD);
 			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 		}
 		
+		
+		
 		txtPlayerChips[0].setX(750);
-		txtPlayerChips[0].setY(175);
+		txtPlayerChips[0].setY(155);
 		
 		txtPlayerChips[1].setX(940);
-		txtPlayerChips[1].setY(235);
+		txtPlayerChips[1].setY(220);
 		
 		txtPlayerChips[2].setX(1015);
-		txtPlayerChips[2].setY(410);
+		txtPlayerChips[2].setY(400);
 		
 		txtPlayerChips[3].setX(945);
 		txtPlayerChips[3].setY(580);
 		
-		txtPlayerChips[4].setX(775);
-		txtPlayerChips[4].setY(655);
+		txtPlayerChips[4].setX(750);
+		txtPlayerChips[4].setY(645);
 		
-		txtPlayerChips[5].setX(440);
-		txtPlayerChips[5].setY(655);
+		txtPlayerChips[5].setX(420);
+		txtPlayerChips[5].setY(645);
 		
-		txtPlayerChips[6].setX(260);
+		txtPlayerChips[6].setX(235);
 		txtPlayerChips[6].setY(580);
 		
-		txtPlayerChips[7].setX(185);
-		txtPlayerChips[7].setY(410);
+		txtPlayerChips[7].setX(165);
+		txtPlayerChips[7].setY(400);
 		
-		txtPlayerChips[8].setX(260);
-		txtPlayerChips[8].setY(235);
+		txtPlayerChips[8].setX(235);
+		txtPlayerChips[8].setY(220);
 		
-		txtPlayerChips[9].setX(440);
-		txtPlayerChips[9].setY(175);
+		txtPlayerChips[9].setX(420);
+		txtPlayerChips[9].setY(155);
 		
 		txtPot.setX(595);
 		txtPot.setY(495);
@@ -467,6 +469,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 
 			if(time == 17) {
 				receiveObjects();
+				for (int i = table.player.length; i < 10; i++) {
+					txtPlayerChips[i].setVisible(false);
+				}
 			}
 			if(time < 15 && !player.getTurn()) {
 				if(table.getHandWinner() >= 0) {
