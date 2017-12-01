@@ -254,4 +254,12 @@ public class Table implements Serializable {
 		public int getBet() {
 			return bet;
 		}
+
+		public void setPlayerNumTurn(int playerNumTurn) {
+			this.playerNumTurn = playerNumTurn;
+		}
+
+		public int getPlayerNumTurn() {
+			return playerNumTurn;
+		}
 }

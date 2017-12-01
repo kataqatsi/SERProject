@@ -180,7 +180,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 1");
 									if(movesLeft == 0) {
-										currentBet = 5;
+										currentBet = 0;
 										movesLeft = numOfPlayers;
 										try {
 											sendTableFlopTurn();
@@ -195,7 +195,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 2");
 									if(movesLeft == 0) {
-										currentBet = 5;
+										currentBet = 0;
 										movesLeft = numOfPlayers;
 										try {
 											sendTableFlopTurnRiver();
@@ -210,7 +210,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									winner = -1;
 									System.out.println("HandleTurn case 3");
 									if(movesLeft == 0) {
-										currentBet = 5;
+										currentBet = 0;
 										movesLeft = numOfPlayers;
 										winner=checkWinner();
 										players[winner].addChips(pot);
@@ -222,7 +222,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									break;
 							}
 							if(playersPlaying == 0) {
-								currentBet = 5;
+								currentBet = 0;
 								startRound();//reset new round, nobody's playing
 								System.out.println("round " + roundCount + "started");
 								roundCount++;
@@ -345,6 +345,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			System.out.println("moves left: " + movesLeft);
 			//players[0].printout();
 			table.setBet(currentBet);
+			table.setPlayerNumTurn(getPlayerTurn());
 			table.setHandWinner(winner);
 			for (int i = 0; i < numOfPlayers; i++) {
 				//players[i].printout();
@@ -410,7 +411,8 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					currentBet = bet;
 					pot += bet;
 					players[i].addChips(bet * -1);
-					players[i].setBet(send.getBet());
+					players[i].setBet(currentBet);
+					//players[i].setBet(send.getBet());
 					return true;
 				} else {
 					//fail the bet, and they fold
@@ -458,10 +460,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 						playersPlaying--;
 						break;
 					case CHECK:
-						if(players[turn].getBet() != currentBet) {
-							players[turn].clearCards();
-							isPlayerPlaying[turn] = false;
-							playersPlaying--;//they tried to check when they weren't allowed to, out of this round
+						if(players[turn].getBet() < currentBet) {
+							if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
+								playersPlaying--;
+							}
+							//players[turn].clearCards();
+							//isPlayerPlaying[turn] = false;
+							//playersPlaying--;//they tried to check when they weren't allowed to, out of this round
 						}
 					default:
 						break;

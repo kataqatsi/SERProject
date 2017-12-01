@@ -154,7 +154,14 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				/*if(player.getCard1().getValue() == 0) {
 					didReceive = false;
 					}*/
-			} catch (Exception ex) {
+				if(table.getPlayerNumTurn() == i) {
+					txtPlayerChips[i].setFill(Color.MAROON);
+				} else {
+					txtPlayerChips[i].setFill(Color.GOLD);
+				}
+				txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
+			}
+		} catch (Exception ex) {
 				//at this point the server must have been disconnected, so whoever has the most chips wins
 				int largest = 0;
 				for(int i = 0; i < table.getPlayerChips().length; i++) {
@@ -162,7 +169,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 						largest = i;
 					}
 				}
-				displayNotification(txtNotify, txtNotify2, "Player " + largest + " won the game!");
+				displayNotification(txtNotify, txtNotify2, "Player " + (largest++) + " won the game!");
 			}
 		}
 		
@@ -172,9 +179,17 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		if(player.getTurn()) {
 			if(table.getHandWinner() >= 0) {
-				displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\nCurrent bet: " + table.getBet() + "make a move before\nthe timer runs out!");
+				if(table.getBet() == 0) {
+					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\nmake a move before\nthe timer runs out!");
+				} else {
+					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\n" + table.getBet() + " TO CALL\nmake a move before\nthe timer runs out!");
+				}
 			} else {
-				displayNotification(txtNotify, txtNotify2, "It's your turn!\nCurrent bet: " + table.getBet() + "make a move before\nthe timer runs out!");
+				if(table.getBet() == 0) {
+					displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+				} else {
+					displayNotification(txtNotify, txtNotify2, "It's your turn!\n" + table.getBet() + " TO CALL\nmake a move before\nthe timer runs out!");
+				}
 			}
 		} else {
 			if(table.getHandWinner() >= 0) {
@@ -186,10 +201,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		txtPot.setText(""+table.getPot());
 		for(int i = 0; i < 10; i++) {
-			txtPlayerChips[i].setText(""+table.getPlayerChips()[i]);
+			txtPlayerChips[i].setText("Player " + (i + 1) + "\n" + table.getPlayerChips()[i]);
 			txtPlayerChips[i].setVisible(true);
 		}
-		
 	}
 
 	public void incrementPlayerCount() {
@@ -236,20 +250,20 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	}
 
 	public void displayNotification(Text t1, Text t2, String text) {
-		t1.setX(375);
-		t1.setY(75);
+		t1.setX(475);
+		t1.setY(55);
 		t1.setCache(true);
 		t1.setText(text);
 		t1.setFill(Color.RED);
-		t1.setFont(Font.font(null, FontWeight.BOLD, 56));
+		t1.setFont(Font.font(null, FontWeight.BOLD, 36));
 		t1.setEffect(new GaussianBlur());
 
-		t2.setX(375);
-		t2.setY(75);
+		t2.setX(475);
+		t2.setY(55);
 		t2.setCache(true);
 		t2.setText(text);
 		t2.setFill(Color.WHITE);
-		t2.setFont(Font.font(null, FontWeight.BOLD, 56));       
+		t2.setFont(Font.font(null, FontWeight.BOLD, 36));       
 	}
 
 	public void connectToServer() {
@@ -267,7 +281,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 
 			//int seatNum = fromServer.readInt();
 			player = (Player) fromServer.readObject();
-			System.out.println("read player at seat number " + player.getSeatNum()+"is it their turn?" + player.getTurn());
+			System.out.println("read player at seat number " + (player.getSeatNum() + 1) + "is it their turn?" + player.getTurn());
 			/*if(player.getSeatNum() == 1) {
 				player.setTurn(true);
 			}*/
@@ -293,7 +307,11 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 
 	private void call() {
 		//if (myTurn == true) {
-		displayNotification(txtNotify, txtNotify2, "You Call the Bet");
+		if (player.getChips() >= table.getBet()) {
+			displayNotification(txtNotify, txtNotify2, "You Call " + table.getBet());
+		} else {
+			displayNotification(txtNotify, txtNotify2, "NOT ENOUGH CHIPS");
+		}
 		//sendTurn(new Send(CALL));
 		send = new Send(CALL);
 		//}	else {
@@ -319,12 +337,17 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	}
 
 	public void raise() {
-		displayNotification(txtNotify, txtNotify2, "You Raise the Bet");
+		if (player.getChips() >= table.getBet()) {
+			displayNotification(txtNotify, txtNotify2, "You Raise " + table.getBet());
+		} else {
+			displayNotification(txtNotify, txtNotify2, "NOT ENOUGH CHIPS");
+		}
 		if(inputBetAmount.getText().isEmpty()) {
 			call();//if you didn't input anything, then just call
 		} else {
 			//sendTurn(new Send(RAISE, Integer.parseInt(inputBetAmount.getText())));
 			send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
+			inputBetAmount.setText("");
 		}
 	}
 
@@ -408,7 +431,11 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		for(int i = 0; i < 10; i++) {
 			txtPlayerChips[i] = new Text();
 			txtPlayerChips[i].setCache(true);
-			txtPlayerChips[i].setFill(Color.GOLD);
+			if(table.getPlayerNumTurn() == i) {
+				txtPlayerChips[i].setFill(Color.MAROON);
+			} else {
+				txtPlayerChips[i].setFill(Color.GOLD);
+			}
 			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 		}
 		
