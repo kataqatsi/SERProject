@@ -57,7 +57,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static Text txtNotify2 = new Text(); 
 	private static Text txtNotify3 = new Text();
 	private static Text txtNotify4 = new Text(); 
-	private Text txtPlayerChips[] = new Text[9];
+	private Text txtPlayerChips[] = new Text[10];
 	private Text timer = new Text();
 	private Canvas canvas;
 	private Canvas canvas2;
@@ -176,8 +176,8 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			displayNotification(txtNotify, txtNotify2, "It's not your turn");
 		}
 		
-		for(int i = 0; i < 9; i++) {
-			txtPlayerChips[i].setText(""+table.playerChips[i]);
+		for(int i = 0; i < 10; i++) {
+			//txtPlayerChips[i].setText(""+table.playerChips[i]);
 		}
 	}
 
@@ -436,6 +436,12 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		txtPlayerChips[8].setY(200);
 		txtPlayerChips[8].setFill(Color.GOLD);
 		txtPlayerChips[8].setFont(Font.font(null, FontWeight.BOLD, 24));
+		
+		txtPlayerChips[9] = new Text();
+		txtPlayerChips[9].setX(200);
+		txtPlayerChips[9].setY(200);
+		txtPlayerChips[9].setFill(Color.GOLD);
+		txtPlayerChips[9].setFont(Font.font(null, FontWeight.BOLD, 24));
 		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
