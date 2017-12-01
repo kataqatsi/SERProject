@@ -155,7 +155,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							}
 							log.appendText("Player's time is up!\n");
 
-							if(playersPlaying == 0) {
+							if(playersPlaying == 1) {
 								startRound();//reset new round, nobody's playing
 								System.out.println("round " + roundCount + "started");
 								roundCount++;

@@ -14,8 +14,8 @@ public class Card  implements Serializable, TexasHoldemConstants {
 	private String stringOfSuit;
 
 	//used to draw with JavaFX
-	int xPos = 100;
-	int yPos = 100;
+	int xPos = 10000;
+	int yPos = 10000;
 
 	//cut position on sprite sheet
 	double spriteX = 0;

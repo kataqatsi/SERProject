@@ -194,7 +194,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		txtPot.setText(""+table.getPot());
 		for(int i = 0; i < table.player.length; i++) {
-			txtPlayerChips[i].setText("Player " + (i + 1) + "\nChips: " + table.getPlayerChips()[i] + "\nBet: " + table.player[i].getBet());
+			txtPlayerChips[i].setText("Player " + (i + 1) + "\n" + table.getPlayerChips()[i]);
 		}
 	}
 
@@ -329,11 +329,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	}
 
 	public void raise() {
-		if (player.getChips() >= table.getBet()) {
-			displayNotification(txtNotify, txtNotify2, "You Raise " + table.getBet());
-		} else {
-			displayNotification(txtNotify, txtNotify2, "NOT ENOUGH CHIPS");
-		}
 		if(inputBetAmount.getText().isEmpty()) {
 			call();//if you didn't input anything, then just call
 		} else {
@@ -341,6 +336,12 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
 			inputBetAmount.setText("");
 		}
+		if (player.getChips() >= table.getBet()) {
+			displayNotification(txtNotify, txtNotify2, "You Raise " + send.getBet());
+		} else {
+			displayNotification(txtNotify, txtNotify2, "NOT ENOUGH CHIPS");
+		}
+		
 	}
 
 
