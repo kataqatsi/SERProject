@@ -59,6 +59,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static Text txtNotify4 = new Text(); 
 	private Text txtPot = new Text();
 	private Text txtPlayerChips[] = new Text[10];
+	private Text txtPot = new Text();
 	private Text timer = new Text();
 	private Canvas canvas;
 	private Canvas canvas2;
@@ -396,38 +397,39 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 		}
 		
-		txtPlayerChips[0].setX(100);
-		txtPlayerChips[0].setY(100);
-		txtPlayerChips[0].setText("TestTESTTESTTEST");
+		txtPlayerChips[0].setX(750);
+		txtPlayerChips[0].setY(175);
 		
+		txtPlayerChips[1].setX(940);
+		txtPlayerChips[1].setY(235);
 		
+		txtPlayerChips[2].setX(1015);
+		txtPlayerChips[2].setY(410);
 		
-		txtPlayerChips[1].setX(100);
-		txtPlayerChips[1].setY(100);
+		txtPlayerChips[3].setX(945);
+		txtPlayerChips[3].setY(580);
 		
-		txtPlayerChips[2].setX(200);
-		txtPlayerChips[2].setY(200);
+		txtPlayerChips[4].setX(775);
+		txtPlayerChips[4].setY(655);
 		
-		txtPlayerChips[3].setX(200);
-		txtPlayerChips[3].setY(200);
+		txtPlayerChips[5].setX(440);
+		txtPlayerChips[5].setY(655);
 		
-		txtPlayerChips[4].setX(200);
-		txtPlayerChips[4].setY(200);
+		txtPlayerChips[6].setX(260);
+		txtPlayerChips[6].setY(580);
 		
-		txtPlayerChips[5].setX(200);
-		txtPlayerChips[5].setY(200);
+		txtPlayerChips[7].setX(185);
+		txtPlayerChips[7].setY(410);
 		
-		txtPlayerChips[6].setX(200);
-		txtPlayerChips[6].setY(200);
+		txtPlayerChips[8].setX(260);
+		txtPlayerChips[8].setY(235);
 		
-		txtPlayerChips[7].setX(200);
-		txtPlayerChips[7].setY(200);
+		txtPlayerChips[9].setX(440);
+		txtPlayerChips[9].setY(175);
 		
-		txtPlayerChips[8].setX(200);
-		txtPlayerChips[8].setY(200);
+		txtPot.setX(595);
+		txtPot.setY(495);
 		
-		txtPlayerChips[9].setX(200);
-		txtPlayerChips[9].setY(200);
 		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
