@@ -10,7 +10,7 @@ public class Player implements Serializable {
 	private boolean isTurn;
 	private String username;
 	private int chipCount;
-	private int bet;
+	private int bet = 0;
 	private Card card1;
 	private Card card2;
 	private ObjectOutputStream out;
