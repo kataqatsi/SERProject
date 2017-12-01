@@ -57,7 +57,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static Text txtNotify2 = new Text(); 
 	private static Text txtNotify3 = new Text();
 	private static Text txtNotify4 = new Text(); 
-	private Text txtPot = new Text();
 	private Text txtPlayerChips[] = new Text[10];
 	private Text txtPot = new Text();
 	private Text timer = new Text();
