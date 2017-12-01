@@ -177,8 +177,10 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		}
 		
 		for(int i = 0; i < 10; i++) {
-			//txtPlayerChips[i].setText(""+table.playerChips[i]);
+			txtPlayerChips[i].setVisible(true);
+			txtPlayerChips[i].setText(""+table.playerChips[i]);
 		}
+		
 	}
 
 	public void incrementPlayerCount() {
@@ -380,14 +382,15 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
 		
-		
 		txtPlayerChips[0] = new Text();
 		txtPlayerChips[0].setX(100);
 		txtPlayerChips[0].setY(100);
+		txtPlayerChips[0].setCache(true);
+		txtPlayerChips[0].setText("TestTESTTESTTEST");
 		txtPlayerChips[0].setFill(Color.GOLD);
 		txtPlayerChips[0].setFont(Font.font(null, FontWeight.BOLD, 24));
-		txtPlayerChips[0].setCache(true);
-		txtPlayerChips[0].setText("Test");
+		
+		
 		
 		txtPlayerChips[1] = new Text();
 		txtPlayerChips[1].setX(100);
