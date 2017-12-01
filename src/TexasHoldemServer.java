@@ -344,6 +344,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			incrementPlayerTurn();
 			System.out.println("moves left: " + movesLeft);
 			//players[0].printout();
+			table.setBet(currentBet);
 			table.setHandWinner(winner);
 			for (int i = 0; i < numOfPlayers; i++) {
 				//players[i].printout();

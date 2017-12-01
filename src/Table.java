@@ -2,15 +2,16 @@ import java.io.Serializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 public class Table implements Serializable {
-    Player player[];
-    Card flop[];
-    Card turn;
-    Card river;
-    Card card;
-    int playerChips[];
-		int handWinner = -1;
+	Player player[];
+	Card flop[];
+	Card turn;
+	Card river;
+	Card card;
+	int playerChips[];
+	int handWinner = -1;
+	int bet = 5;
     
-    int stage;
+	int stage;
 	int playerNumTurn;
 	int pot;
 
@@ -244,5 +245,13 @@ public class Table implements Serializable {
 
 		public int getHandWinner() {
 			return handWinner;
+		}
+
+		public void setBet(int bet) {
+			this.bet = bet;
+		}
+
+		public int getBet() {
+			return bet;
 		}
 }

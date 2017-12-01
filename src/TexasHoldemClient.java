@@ -172,9 +172,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		if(player.getTurn()) {
 			if(table.getHandWinner() >= 0) {
-				displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\nmake a move before\nthe timer runs out!");
+				displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\nCurrent bet: " + table.getBet() + "make a move before\nthe timer runs out!");
 			} else {
-				displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+				displayNotification(txtNotify, txtNotify2, "It's your turn!\nCurrent bet: " + table.getBet() + "make a move before\nthe timer runs out!");
 			}
 		} else {
 			if(table.getHandWinner() >= 0) {
