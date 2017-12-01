@@ -7,37 +7,51 @@ public class Table implements Serializable {
     Card turn;
     Card river;
     Card card;
-    int stage;
-		int playerNumTurn;
-		int pot;
-
-		public Card getFlop1() {
-			return flop[0];
-		}
-		public Card getFlop2() {
-			return flop[1];
-		}
-		public Card getFlop3() {
-			return flop[2];
-		}
-		public Card getTurn() {
-			return turn;
-		}
-		public Card getRiver() {
-			return river;
-		}
+    int playerChips[];
+		int handWinner = -1;
     
-    public Table(Player[] p) {
+    int stage;
+	int playerNumTurn;
+	int pot;
+
+	public Card getFlop1() {
+		return flop[0];
+	}
+	public Card getFlop2() {
+		return flop[1];
+	}
+	public Card getFlop3() {
+		return flop[2];
+	}
+	public Card getTurn() {
+		return turn;
+	}
+	public Card getRiver() {
+		return river;
+	}
+    
+	public void clearChips() {
+		playerChips = new int[10];
+		
+		for(int i = 0; i < 10; i++) {
+			playerChips[i] = 0;
+		}
+	}
+    public Table(Player[] p, int potVal) {
+			pot = potVal;
         //player = p;
     		stage = 0;
-				player = new Player[p.length];
-				for (int i = 0; i < player.length; i++) {
-					//p[i].printout();
-					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
-					//player[i].printout();
-					//player[i].clearCards();
-					//player[i].printout();
-				}
+		player = new Player[p.length];
+		clearChips();
+		
+		for (int i = 0; i < player.length; i++) {
+			//p[i].printout();
+			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+			playerChips[i] = p[i].getChips();
+			//player[i].printout();
+			//player[i].clearCards();
+			//player[i].printout();
+		}
         
         //set flop to blank cards
         flop = new Card[3];
@@ -70,17 +84,21 @@ public class Table implements Serializable {
         river.setY(340);
     }
     
-    public Table(Player[] p, Card[] f) {
+    public Table(Player[] p, Card[] f, int potVal) {
+			pot = potVal;
         //player = p;
     		stage = 1;
-				player = new Player[p.length];
-				for (int i = 0; i < player.length; i++) {
-					//p[i].printout();
-					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
-					//player[i].printout();
-					//player[i].clearCards();
-					//player[i].printout();
-				}
+		player = new Player[p.length];
+		clearChips();
+		
+		for (int i = 0; i < player.length; i++) {
+			//p[i].printout();
+			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+			playerChips[i] = p[i].getChips();
+			//player[i].printout();
+			//player[i].clearCards();
+			//player[i].printout();
+		}
         flop = f;
         
         //set turn to blank card
@@ -106,17 +124,20 @@ public class Table implements Serializable {
         river.setY(340);
     }
     
-    public Table(Player[] p, Card[] f, Card t) {
+    public Table(Player[] p, Card[] f, Card t, int potVal) {
+			pot = potVal;
         //player = p;
     		stage = 2;
-				player = new Player[p.length];
-				for (int i = 0; i < player.length; i++) {
-					//p[i].printout();
-					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
-					//player[i].printout();
-					//player[i].clearCards();
-					//player[i].printout();
-				}
+		player = new Player[p.length];
+		clearChips();
+		for (int i = 0; i < player.length; i++) {
+			//p[i].printout();
+			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+			playerChips[i] = p[i].getChips();
+			//player[i].printout();
+			//player[i].clearCards();
+			//player[i].printout();
+		}
         flop = f;
         turn = t;
         
@@ -138,17 +159,21 @@ public class Table implements Serializable {
         river.setY(340);
     }
     
-    public Table(Player[] p, Card[] f, Card t, Card r) {
+    public Table(Player[] p, Card[] f, Card t, Card r, int potVal) {
+			pot = potVal;
     		stage = 3;
         //player = p;
-				player = new Player[p.length];
-				for (int i = 0; i < player.length; i++) {
-					//p[i].printout();
-					player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
-					//player[i].printout();
-					//player[i].clearCards();
-					//player[i].printout();
-				}
+		player = new Player[p.length];
+		clearChips();
+		
+		for (int i = 0; i < player.length; i++) {
+			//p[i].printout();
+			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
+			playerChips[i] = p[i].getChips();
+			//player[i].printout();
+			//player[i].clearCards();
+			//player[i].printout();
+		}
         flop = f;
         turn = t;
         river = r;
@@ -177,6 +202,7 @@ public class Table implements Serializable {
     		}
     }
     
+    
     public void render(GraphicsContext gc) {
         Image table = new Image("poker_table.png");
         
@@ -196,7 +222,27 @@ public class Table implements Serializable {
         
     }
     
+    public int[] getPlayerChips() {
+    		return playerChips;
+    }
+    
     public int getStage() {
     		return stage;
-    }
+		}
+
+		public void setPot(int pot) {
+			this.pot = pot;
+		}
+
+		public int getPot() {
+			return pot;
+		}
+
+		public void setHandWinner(int handWinner) {
+			this.handWinner = handWinner;
+		}
+
+		public int getHandWinner() {
+			return handWinner;
+		}
 }

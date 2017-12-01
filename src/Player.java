@@ -101,6 +101,7 @@ public class Player implements Serializable {
 				card1.setY(360);
 				card2.setX(915);
 				card2.setY(360);
+				
 				break;
 			case 4:
 				card1.setX(820);
@@ -218,4 +219,3 @@ public class Player implements Serializable {
 		isTurn = t;
 	}
 }
-

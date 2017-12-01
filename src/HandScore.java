@@ -1,7 +1,7 @@
 //Calculates a players total hand score
 
 public class HandScore implements java.io.Serializable {
-	
+
 	//Players cards and flop, turn, river
 	private Card pCard1;
 	private Card pCard2;
@@ -10,7 +10,7 @@ public class HandScore implements java.io.Serializable {
 	private Card flop3; 	 
 	private Card turn;
 	private Card river;
-	
+
 	//array to loadCards
 	private Card[] loadCards;
 
@@ -126,8 +126,8 @@ public class HandScore implements java.io.Serializable {
 		if (isStraight() == true && isFlush() == true) {
 			return true;
 		} 
-			return false;
-		
+		return false;
+
 	}
 
 	//if card[i] is the same as the next 3 cards return true
@@ -136,8 +136,8 @@ public class HandScore implements java.io.Serializable {
 			if(loadCards[i].getValue() == loadCards[i+1].getValue()&&loadCards[i].getValue() == loadCards[i+2].getValue()
 					&&loadCards[i].getValue() == loadCards[i+3].getValue()) {
 				return true;
-				
-			}
+
+					}
 		}
 
 		return false;
@@ -148,7 +148,7 @@ public class HandScore implements java.io.Serializable {
 		for (int i = 0; i < loadCards.length-2; i++) {
 			if(loadCards[i].getValue() == loadCards[i+1].getValue()&&loadCards[i].getValue() == loadCards[i+2].getValue()) {
 				return true;
-				
+
 			}
 		}
 
@@ -171,7 +171,7 @@ public class HandScore implements java.io.Serializable {
 		}
 		return false;
 	}
-// if 3 of a kind is true and two of a kind is true
+	// if 3 of a kind is true and two of a kind is true
 	private boolean isFullHouse() {
 		if (isThree() == true && isTwo() == true) {
 			return true;
@@ -204,7 +204,7 @@ public class HandScore implements java.io.Serializable {
 		return pCard2.getValue()-1;
 	}
 
-	
+
 	//if else statements to determine total score
 	public int getScore() {
 		if (isRoyalFlush())
