@@ -39,7 +39,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static ObjectOutputStream toServer;
 	private boolean connected = false;
 	private boolean waiting = true;
-	//private boolean myTurn = false;
 	private Player player;
 	private boolean gameOver = false;
 	private int time = 17;
@@ -73,9 +72,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	Timeline animationConnect;
 
 	public static void main(String[] args) {
-		//Connect to server
-		//connectToServer();
-		//Launch JavaFX Game
 		launch(args);
 	}
 
@@ -84,11 +80,9 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Lobby");
-		//Canvas canvas = new Canvas(1231,781);
 		canvas = new Canvas(500, 300);
 		gc = canvas.getGraphicsContext2D();
 		root = new Group();
-		//Scene scene = new Scene(root, 1231, 781);
 		scene = new Scene(root, 500, 300);
 
 		btnJoinGame.setText("Join Game");
@@ -126,34 +120,21 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		lobbyTitleNotification(txtNotify, txtNotify2, "TEXAS HOLD'EM");    
 		primaryStage.setScene(scene);
 		primaryStage.show();
-
-		//renderGameScreen(gc);
-
-
-		//recieveObjects();
-
-		//renderGameScreen(gc);
-		//table.render(gc);
-		//player.renderHand(gc);
 	}
 
 	public void receiveObjects() {
 		boolean didReceive = false;
 		while(!didReceive) {
 			try {
-				//System.out.println("waiting for table");
 				table = (Table) fromServer.readObject(); //Table with blank cards for opponents
 				System.out.println("table recieved");
-				//player = new Player();
-				//player.printout();
+				
 				player = (Player) fromServer.readObject();//receive the player info from the server
 				System.out.println("player recieved");
 				player.printout();
 				System.out.println();
 				didReceive = true;
-				/*if(player.getCard1().getValue() == 0) {
-					didReceive = false;
-					}*/
+				
 			} catch (Exception ex) {
 				//at this point the server must have been disconnected, so whoever has the most chips wins
 				int largest = 0;
@@ -265,50 +246,29 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			fromServer = new ObjectInputStream(socket.getInputStream());
 			toServer = new ObjectOutputStream(socket.getOutputStream());
 
-			//Get Seat
-			//int seatNum = fromServer.readInt();
-			//player = new Player(seatNum);  
-
 			connected = true;
 
-			//int seatNum = fromServer.readInt();
 			player = (Player) fromServer.readObject();
 			System.out.println("read player at seat number " + (player.getSeatNum() + 1) + "is it their turn?" + player.getTurn());
-			/*if(player.getSeatNum() == 1) {
-				player.setTurn(true);
-			}*/
-			//player = new Player(seatNum);
+	
 		} catch (Exception ex) {
 			System.out.println("failed");
 			System.err.println(ex);
 		} 
 	}	
 
-	/*	private void waitForPlayerAction() throws InterruptedException {
-			while (waiting) {
-			Thread.sleep(100);
-			}
-			waiting = true;
-			}*/
-
 	public void check() {
 		displayNotification(txtNotify, txtNotify2, "You Check Your Hand");
 		send = new Send(CHECK);
-		//sendTurn(new Send(CHECK));
 	}
 
 	private void call() {
-		//if (myTurn == true) {
 		if (player.getChips() >= table.getBet()) {
 			displayNotification(txtNotify, txtNotify2, "You Call " + table.getBet());
 		} else {
 			displayNotification(txtNotify, txtNotify2, "NOT ENOUGH CHIPS");
 		}
-		//sendTurn(new Send(CALL));
 		send = new Send(CALL);
-		//}	else {
-		//displayNotification(txtNotify, txtNotify2, "It is not your turn yet");
-		//}
 	}
 
 	public void test() {
@@ -332,7 +292,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		if(inputBetAmount.getText().isEmpty()) {
 			call();//if you didn't input anything, then just call
 		} else {
-			//sendTurn(new Send(RAISE, Integer.parseInt(inputBetAmount.getText())));
 			send = new Send(RAISE, Integer.parseInt(inputBetAmount.getText()));
 			inputBetAmount.setText("");
 		}
@@ -349,7 +308,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		try {
 			toServer.reset();
 			toServer.writeObject(send);
-			//didSend = true;
 			System.out.println("turn sent");
 		} catch (Exception ex) {
 			System.out.println("failed to send I guess");
@@ -429,8 +387,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			txtPlayerChips[i].setFont(Font.font(null, FontWeight.BOLD, 24));
 		}
 		
-		
-		
 		txtPlayerChips[0].setX(750);
 		txtPlayerChips[0].setY(155);
 		
@@ -463,8 +419,6 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		
 		txtPot.setX(595);
 		txtPot.setY(495);
-		
-		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
 
@@ -497,7 +451,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 					sendTurn(send);
 				}
 				receiveObjects();
-				//send = new Send(TIMEISUP);
+				
 			}
 			time--;    
 		};
@@ -528,7 +482,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		inputBetAmount.setPromptText("Bet amount");
 		inputBetAmount.setLayoutX(575);
 		inputBetAmount.setLayoutY(720);
-		//make sure only integers are put in
+		
 		inputBetAmount.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -567,12 +521,10 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		root2.getChildren().add(timer);
 		root2.getChildren().add(inputBetAmount);
 		root2.getChildren().add(txtPot);
-			//root.getChildren().add(txtPlayerChips[0]);
-			//root.getChildren().add(txtPlayerChips[1]);
+		
 		for(int i = 0; i < 10; i++) {
 			root2.getChildren().add(txtPlayerChips[i]);
 		}
-		//root.getChildren().add(timer);
 
 		primaryStage.setScene(scene2);
 		primaryStage.show();
@@ -583,24 +535,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	}
 
 	public void testGame(GraphicsContext gc) {
-		renderGameScreen(gc);
-		//renderGameScreen(gc2);
-		//table.render(gc2);
-		//player.renderHand(gc2);
-
-		/*try {
-				 table = (Table) fromServer.readObject(); //Table with blank cards for opponents
-				 player.setCard((Card) fromServer.readObject());
-				 player.setCard((Card) fromServer.readObject());
-				 table = (Table) fromServer.readObject(); //Table with flop + blank cards for opponents
-			//table = (Table) fromServer.readObject(); //Table with flop + turn + blank cards for opponents
-			//table = (Table) fromServer.readObject(); //Table with flop + turn + river + blank cards for opponents
-
-			table.render(gc);
-			player.renderHand(gc);
-			//recieveObjects();
-		} catch (Exception ex) {
-		}*/  
+		renderGameScreen(gc);  
 	}
 
 	public void exit() {

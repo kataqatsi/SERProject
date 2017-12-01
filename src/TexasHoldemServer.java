@@ -278,12 +278,10 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 
 		public int checkWinner() {
 			HandScore score[] = new HandScore[numOfPlayers];
-			//int intScore[] = new int[numOfPlayers];
 			int highScore = 0;
 			int winner = 0;
 			for(int i = 0; i < numOfPlayers; i++) {
 				score[i] = new HandScore(players[i].getCard1(), players[i].getCard2(), table.getFlop1(), table.getFlop2(), table.getFlop3(), table.getTurn(), table.getRiver());
-				//intScore[i] = score[i].getScore();
 			}
 			for(int i = 0; i < numOfPlayers; i++) {
 				if(score[i].getScore() >= highScore) {
@@ -301,21 +299,13 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			d.shuffle();
 			d.shuffle();
 			d.shuffle();
-			//Card c;
-			//Card c = new Card();
 
 			//Deal cards to each player
 			for (int i = 0; i < numOfPlayers; i++) {
 				players[i].clearCards();
-				//c = d.drawCard();
 				players[i].setCard(d.drawCard());
-				//players[i].setCard(c);
-				//toPlayer[i].writeObject(c);
-				//c = d.drawCard();
 				players[i].setCard(d.drawCard());
-
 				players[i].printout();
-				//toPlayer[i].writeObject(players[i]);//just send the client the entire player
 			}
 			table = new Table(players, pot);
 		}
@@ -323,9 +313,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		public void assignSeats() throws IOException {
 			int seatNum = 1;
 			for (int i = 0; i < numOfPlayers; i++) {
-				//players[i] = new Player(i);
 				players[i] = new Player(seatNum);
-				//toPlayer[i].writeObject(players[i]);
 				seatNum++;
 			}
 
@@ -338,23 +326,18 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 
 		public void sendTable() throws IOException {
-			//players[0].printout();
-			//players[0].printout();
 			table.setPlayerCards();
 			incrementPlayerTurn();
 			System.out.println("moves left: " + movesLeft);
-			//players[0].printout();
 			table.setBet(currentBet);
 			table.setHandWinner(winner);
 			for (int i = 0; i < numOfPlayers; i++) {
-				//players[i].printout();
 				if(players[i].getChips() == 0) {
 					playerHasNoMoney(i);
 				}
 				toPlayer[i].reset();
 				toPlayer[i].writeObject(table);
 				System.out.println("writeObject table to player " + i);
-				//players[i].printout();
 				toPlayer[i].writeObject(players[i]);//just send the client the entire player
 				System.out.println("writeObject Player to player " + i);
 			}	
@@ -381,8 +364,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 
 		public boolean isGameOver() {
 			//subtract 1 so it works with array indices
-			return isGameOver(numOfPlayers-1, 0);//just makes it easier to call this from other places, because you have to initially call it like this
-			//don't judge my crappy hacks
+			return isGameOver(numOfPlayers-1, 0);
 		}
 		
 		public boolean isGameOver(int playerNum, int numPlayersWithChips) {
@@ -399,8 +381,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 
 		public boolean betFunction(int i) { //return true if player successfully bet, otherwise false
 			int bet = currentBet;
-			//what a screwed up if statement
-			//so sorry
 			if(send.getMove() == CALL || send.getBet() > currentBet) {
 				if(bet <= players[i].getChips()) {//allow the player to bet, they have the money
 					if(send.getMove() == RAISE) {
@@ -411,12 +391,8 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					pot += bet;
 					players[i].addChips(bet * -1);
 					players[i].setBet(currentBet);
-					//players[i].setBet(send.getBet());
 					return true;
 				} else {
-					//fail the bet, and they fold
-					//TODO probably a good idea to set up a better system
-					//until then, it's on the player to be smart
 					players[i].clearCards();
 					isPlayerPlaying[i] = false;
 					return false;
@@ -463,9 +439,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
 								playersPlaying--;
 							}
-							//players[turn].clearCards();
-							//isPlayerPlaying[turn] = false;
-							//playersPlaying--;//they tried to check when they weren't allowed to, out of this round
 						}
 					default:
 						break;
@@ -495,7 +468,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 		public void playerHasNoMoney(int playerNumber) {
 			try {
-				//socket[playerNumber].close();
 			} catch(Exception ex) {
 
 			}

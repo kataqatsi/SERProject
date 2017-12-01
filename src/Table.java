@@ -38,19 +38,15 @@ public class Table implements Serializable {
 		}
 	}
     public Table(Player[] p, int potVal) {
-			pot = potVal;
-        //player = p;
+		pot = potVal;
     		stage = 0;
 		player = new Player[p.length];
 		clearChips();
 		
 		for (int i = 0; i < player.length; i++) {
-			//p[i].printout();
 			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
 			playerChips[i] = p[i].getChips();
-			//player[i].printout();
-			//player[i].clearCards();
-			//player[i].printout();
+		
 		}
         
         //set flop to blank cards
@@ -92,12 +88,8 @@ public class Table implements Serializable {
 		clearChips();
 		
 		for (int i = 0; i < player.length; i++) {
-			//p[i].printout();
 			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
 			playerChips[i] = p[i].getChips();
-			//player[i].printout();
-			//player[i].clearCards();
-			//player[i].printout();
 		}
         flop = f;
         
@@ -125,18 +117,13 @@ public class Table implements Serializable {
     }
     
     public Table(Player[] p, Card[] f, Card t, int potVal) {
-			pot = potVal;
-        //player = p;
+		pot = potVal;
     		stage = 2;
 		player = new Player[p.length];
 		clearChips();
 		for (int i = 0; i < player.length; i++) {
-			//p[i].printout();
 			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
 			playerChips[i] = p[i].getChips();
-			//player[i].printout();
-			//player[i].clearCards();
-			//player[i].printout();
 		}
         flop = f;
         turn = t;
@@ -167,12 +154,8 @@ public class Table implements Serializable {
 		clearChips();
 		
 		for (int i = 0; i < player.length; i++) {
-			//p[i].printout();
 			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
 			playerChips[i] = p[i].getChips();
-			//player[i].printout();
-			//player[i].clearCards();
-			//player[i].printout();
 		}
         flop = f;
         turn = t;
