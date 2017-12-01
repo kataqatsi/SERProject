@@ -57,6 +57,7 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 	private static Text txtNotify2 = new Text(); 
 	private static Text txtNotify3 = new Text();
 	private static Text txtNotify4 = new Text(); 
+	private Text txtPlayerChips[] = new Text[9];
 	private Text timer = new Text();
 	private Canvas canvas;
 	private Canvas canvas2;
@@ -164,15 +165,19 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				//System.out.println("test3");
 			}
 		}
-
-
+		
 		renderGameScreen(gc2);
 		table.render(gc2);
 		player.renderHand(gc2);
+		
 		if(player.getTurn()) {
 			displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
 		} else {
 			displayNotification(txtNotify, txtNotify2, "It's not your turn");
+		}
+		
+		for(int i = 0; i < 9; i++) {
+			txtPlayerChips[i].setText(""+table.playerChips[i]);
 		}
 	}
 
@@ -374,6 +379,19 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		timer.setText(""+ time);
 		timer.setFill(Color.YELLOW);
 		timer.setFont(Font.font(null, FontWeight.BOLD, 56));
+		txtPlayerChips[0] = new Text();
+		txtPlayerChips[0].setX(200);
+		txtPlayerChips[0].setY(200);
+		txtPlayerChips[0].setFill(Color.WHITE);
+		txtPlayerChips[0].setFont(Font.font(null, FontWeight.BOLD, 24));
+		txtPlayerChips[1] = new Text();
+		txtPlayerChips[2] = new Text();
+		txtPlayerChips[3] = new Text();
+		txtPlayerChips[4] = new Text();
+		txtPlayerChips[5] = new Text();
+		txtPlayerChips[6] = new Text();
+		txtPlayerChips[7] = new Text();
+		txtPlayerChips[8] = new Text();
 		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
