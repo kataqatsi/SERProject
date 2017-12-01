@@ -29,15 +29,18 @@ public class Table implements Serializable {
 		return river;
 	}
     
+	public void clearChips() {
+		playerChips = new int[10];
+		
+		for(int i = 0; i < 10; i++) {
+			playerChips[i] = 0;
+		}
+	}
     public Table(Player[] p) {
         //player = p;
     		stage = 0;
 		player = new Player[p.length];
-		playerChips = new int[9];
-		
-		for(int i = 0; i < 9; i++) {
-			playerChips[i] = 0;
-		}
+		clearChips();
 		
 		for (int i = 0; i < player.length; i++) {
 			//p[i].printout();
@@ -83,11 +86,7 @@ public class Table implements Serializable {
         //player = p;
     		stage = 1;
 		player = new Player[p.length];
-		playerChips = new int[9];
-		
-		for(int i = 0; i < 9; i++) {
-			playerChips[i] = 0;
-		}
+		clearChips();
 		
 		for (int i = 0; i < player.length; i++) {
 			//p[i].printout();
@@ -126,12 +125,7 @@ public class Table implements Serializable {
         //player = p;
     		stage = 2;
 		player = new Player[p.length];
-		playerChips = new int[9];
-		
-		for(int i = 0; i < 9; i++) {
-			playerChips[i] = 0;
-		}
-		
+		clearChips();
 		for (int i = 0; i < player.length; i++) {
 			//p[i].printout();
 			player[i] = new Player(p[i].getSeatNum(), p[i].getChips());
@@ -165,11 +159,7 @@ public class Table implements Serializable {
     		stage = 3;
         //player = p;
 		player = new Player[p.length];
-		playerChips = new int[9];
-		
-		for(int i = 0; i < 9; i++) {
-			playerChips[i] = 0;
-		}
+		clearChips();
 		
 		for (int i = 0; i < player.length; i++) {
 			//p[i].printout();
