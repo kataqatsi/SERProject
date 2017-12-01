@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class TexasHoldemServer extends Application implements TexasHoldemConstants {
-
+	int winner = -1;
 	int roundCount = 0;
 	private Socket socket[];
 	static private int maxPlayers = 2;
@@ -37,11 +37,12 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 	Card river;
 	int pot;
 	int movesLeft;
-	int currentBet;
+	int currentBet = 5;
 	int playerNumTurn;
 	int playersPlaying;
 	Send send;
 	int time = 15;
+	boolean isPlayerPlaying[];
 
 	int numOfPlayers = 0;
 
@@ -124,8 +125,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					toPlayer[i] = new ObjectOutputStream(socket[i].getOutputStream());
 					fromPlayer[i] = new ObjectInputStream(socket[i].getInputStream());
 				}
-				boolean stillPlaying = true;
-
+				isPlayerPlaying = new boolean[numOfPlayers];
 				assignSeats();
 				System.out.println("Assigned Seats");
 				startRound();
@@ -145,6 +145,14 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							log.appendText("Player has " +time + " seconds to make a decision\n");
 						}
 						if (time == 0) {
+							if(isGameOver()) {
+								try {
+									sendTable();
+								} catch(Exception ex) {
+
+								}
+								System.exit(1);
+							}
 							log.appendText("Player's time is up!\n");
 
 							if(playersPlaying == 0) {
@@ -154,9 +162,11 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 							}
 							switch(table.getStage()) {
 								case 0:
+									winner = -1;
 									handleTurn();
 									System.out.println("HandleTurn case 0");
 									if(movesLeft == 0) {
+										currentBet = 5;
 										movesLeft = numOfPlayers;
 										try {
 											sendTableFlop();
@@ -170,6 +180,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 1");
 									if(movesLeft == 0) {
+										currentBet = 5;
 										movesLeft = numOfPlayers;
 										try {
 											sendTableFlopTurn();
@@ -183,6 +194,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 2");
 									if(movesLeft == 0) {
+										currentBet = 5;
 										movesLeft = numOfPlayers;
 										try {
 											sendTableFlopTurnRiver();
@@ -196,8 +208,9 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 									handleTurn();
 									System.out.println("HandleTurn case 3");
 									if(movesLeft == 0) {
+										currentBet = 5;
 										movesLeft = numOfPlayers;
-										int winner=checkWinner();
+										winner=checkWinner();
 										players[winner].addChips(pot);
 										pot = 0;
 										startRound();//reset new round, nobody's playing
@@ -205,6 +218,12 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 										roundCount++;
 									}
 									break;
+							}
+							if(playersPlaying == 0) {
+								currentBet = 5;
+								startRound();//reset new round, nobody's playing
+								System.out.println("round " + roundCount + "started");
+								roundCount++;
 							}
 
 							try {
@@ -225,9 +244,6 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					animation.play();
 
 
-					//}
-					stillPlaying = false;
-					//}
 				} catch(Exception ex) {
 					System.out.println(ex);
 				}
@@ -237,8 +253,12 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 		}
 
 		public void startRound() {
+			currentBet = 5;
 			movesLeft = numOfPlayers;
 			playersPlaying = numOfPlayers;
+			for(int i =0; i < numOfPlayers; i++) {
+				isPlayerPlaying[i] = true;
+			}
 			boolean success = false;
 			while(!success) {
 				try {
@@ -323,8 +343,15 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			incrementPlayerTurn();
 			System.out.println("moves left: " + movesLeft);
 			//players[0].printout();
+			if(winner >= 0) {
+				table.setHandWinner(winner);
+				winner = -1;
+			}
 			for (int i = 0; i < numOfPlayers; i++) {
 				//players[i].printout();
+				if(players[i].getChips() == 0) {
+					playerHasNoMoney(i);
+				}
 				toPlayer[i].reset();
 				toPlayer[i].writeObject(table);
 				System.out.println("writeObject table to player " + i);
@@ -383,7 +410,8 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 						movesLeft = numOfPlayers;//need to loop through everyone again to let them catch up with the raise
 					}
 					currentBet = bet;
-					pot += bet - players[i].getBet();
+					pot += bet;
+					players[i].addChips(bet * -1);
 					players[i].setBet(send.getBet());
 					return true;
 				} else {
@@ -391,6 +419,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 					//TODO probably a good idea to set up a better system
 					//until then, it's on the player to be smart
 					players[i].clearCards();
+					isPlayerPlaying[i] = false;
 					return false;
 				}
 			}
@@ -401,47 +430,55 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			System.out.println("Getting Player Turn");
 			int turn = getPlayerTurn();
 			System.out.println("Got Player Turn");
-			try {
-				System.out.println("Receiving Send object from player " + turn);
-				send = (Send) fromPlayer[turn].readObject();
-				System.out.println("Received Send-" +send.getMove());
-			} catch (ClassNotFoundException | IOException e1) {
-				System.out.println("ERROR");
-				//e1.printStackTrace();
+			if(players[turn].getChips() > 0) {
+				try {
+					System.out.println("Receiving Send object from player " + turn);
+					send = (Send) fromPlayer[turn].readObject();
+					System.out.println("Received Send-" +send.getMove());
+				} catch (ClassNotFoundException | IOException e1) {
+					isPlayerPlaying[turn] = false;
+					System.out.println("ERROR");
+				}
+			} else {
+				isPlayerPlaying[turn] = false;
 			}
-			//incrementPlayerTurn();
 
-			switch(send.getMove()) {
-				case RAISE:
-					System.out.println("Received RAISE");
-					if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
+			if(isPlayerPlaying[turn]) {
+				switch(send.getMove()) {
+					case RAISE:
+						System.out.println("Received RAISE");
+						if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
+							playersPlaying--;
+						}
+						System.out.println("RAISE passed if statement");
+						break;
+					case CALL:
+						System.out.println("Received CALL");
+						if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
+							playersPlaying--;
+						}
+						System.out.println("CALL passed if statement");
+						break;
+					case TIMEISUP:
+					case FOLD:
+						System.out.println("Received FOLD/TIMEISUP");
+						players[turn].clearCards();
+						isPlayerPlaying[turn] = false;
 						playersPlaying--;
-					}
-					System.out.println("RAISE passed if statement");
-					break;
-				case CALL:
-					System.out.println("Received CALL");
-					if(!betFunction(turn)) {//if they couldn't bet, the function returns false and there's one less player playing
-						playersPlaying--;
-					}
-					System.out.println("CALL passed if statement");
-					break;
-				case TIMEISUP:
-				case FOLD:
-					System.out.println("Received FOLD/TIMEISUP");
-					players[turn].clearCards();
-					playersPlaying--;
-				case CHECK:
-					System.out.println("Received CHECK");
-					if(players[turn].getBet() != currentBet) {
-						playersPlaying--;//they tried to check when they weren't allowed to, out of this round
-					}
-					System.out.println("CHECK passed if statement");
-				default:
-					break;
+						break;
+					case CHECK:
+						System.out.println("Received CHECK");
+						if(players[turn].getBet() != currentBet) {
+							players[turn].clearCards();
+							isPlayerPlaying[turn] = false;
+							playersPlaying--;//they tried to check when they weren't allowed to, out of this round
+						}
+						System.out.println("CHECK passed if statement");
+					default:
+						break;
+				}
 			}
 			movesLeft--;
-			//incrementPlayerTurn();
 		}
 
 		public int getPlayerTurn() {
@@ -459,8 +496,16 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			players[turn].setTurn(false);
 			System.out.println("no longer player " + turn + "'s turn");
 			turn++;
-			players[turn % numOfPlayers].setTurn(true);
+			turn %= numOfPlayers;
+			players[turn].setTurn(true);
 			System.out.println("player " + turn + "'s turn");
+		}
+		public void playerHasNoMoney(int playerNumber) {
+			try {
+				//socket[playerNumber].close();
+			} catch(Exception ex) {
+
+			}
 		}
 	}
 }

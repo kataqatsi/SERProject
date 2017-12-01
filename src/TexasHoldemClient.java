@@ -151,18 +151,18 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 				player.printout();
 				System.out.println();
 				didReceive = true;
-				if(player.getTurn()) {
-					displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
-				} else {
-					displayNotification(txtNotify, txtNotify2, "It's not your turn");
-				}
 				/*if(player.getCard1().getValue() == 0) {
 					didReceive = false;
 					}*/
-			} catch (IOException ex) {
-				//System.out.println("test4");
 			} catch (Exception ex) {
-				//System.out.println("test3");
+				//at this point the server must have been disconnected, so whoever has the most chips wins
+				int largest = 0;
+				for(int i = 0; i < table.getPlayerChips().length; i++) {
+					if(table.getPlayerChips()[i] > table.getPlayerChips()[largest]) {
+						largest = i;
+					}
+				}
+				displayNotification(txtNotify, txtNotify2, "Player " + largest + " won the game!");
 			}
 		}
 		
@@ -171,9 +171,17 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		player.renderHand(gc2);
 		
 		if(player.getTurn()) {
-			displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+			if(table.getHandWinner() >= 0) {
+				displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's your turn!\nmake a move before\nthe timer runs out!");
+			} else {
+				displayNotification(txtNotify, txtNotify2, "It's your turn!\nmake a move before\nthe timer runs out!");
+			}
 		} else {
-			displayNotification(txtNotify, txtNotify2, "It's not your turn");
+			if(table.getHandWinner() >= 0) {
+				displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's not your turn");
+			} else {
+				displayNotification(txtNotify, txtNotify2, "It's not your turn");
+			}
 		}
 		
 		txtPot.setText(""+table.getPot());
@@ -329,6 +337,14 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 			System.out.println("turn sent");
 		} catch (Exception ex) {
 			System.out.println("failed to send I guess");
+			//at this point the server must have been disconnected, so whoever has the most chips wins
+			int largest = 0;
+			for(int i = 0; i < table.getPlayerChips().length; i++) {
+				if(table.getPlayerChips()[i] > table.getPlayerChips()[largest]) {
+					largest = i;
+				}
+			}
+			displayNotification(txtNotify, txtNotify2, "Player " + largest + " won the game!");
 		}
 		send = new Send();
 	}
@@ -432,8 +448,16 @@ public class TexasHoldemClient extends Application implements TexasHoldemConstan
 		//receiveObjects();
 
 		EventHandler<ActionEvent> eventHandler = e -> {       
+
 			if(time == 17) {
 				receiveObjects();
+			}
+			if(time < 15 && !player.getTurn()) {
+				if(table.getHandWinner() >= 0) {
+					displayNotification(txtNotify, txtNotify2, "Player " + table.getHandWinner() + " won the last round!\nIt's not your turn");
+				} else {
+					displayNotification(txtNotify, txtNotify2, "It's not your turn");
+				}
 			}
 			if (time == 10) {
 				timer.setFill(Color.ORANGE);

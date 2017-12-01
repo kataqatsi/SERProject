@@ -8,6 +8,7 @@ public class Table implements Serializable {
     Card river;
     Card card;
     int playerChips[];
+		int handWinner;
     
     int stage;
 	int playerNumTurn;
@@ -235,5 +236,13 @@ public class Table implements Serializable {
 
 		public int getPot() {
 			return pot;
+		}
+
+		public void setHandWinner(int handWinner) {
+			this.handWinner = handWinner;
+		}
+
+		public int getHandWinner() {
+			return handWinner;
 		}
 }
