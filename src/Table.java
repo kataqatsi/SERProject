@@ -36,7 +36,8 @@ public class Table implements Serializable {
 			playerChips[i] = 0;
 		}
 	}
-    public Table(Player[] p) {
+    public Table(Player[] p, int potVal) {
+			pot = potVal;
         //player = p;
     		stage = 0;
 		player = new Player[p.length];
@@ -82,7 +83,8 @@ public class Table implements Serializable {
         river.setY(340);
     }
     
-    public Table(Player[] p, Card[] f) {
+    public Table(Player[] p, Card[] f, int potVal) {
+			pot = potVal;
         //player = p;
     		stage = 1;
 		player = new Player[p.length];
@@ -121,7 +123,8 @@ public class Table implements Serializable {
         river.setY(340);
     }
     
-    public Table(Player[] p, Card[] f, Card t) {
+    public Table(Player[] p, Card[] f, Card t, int potVal) {
+			pot = potVal;
         //player = p;
     		stage = 2;
 		player = new Player[p.length];
@@ -155,7 +158,8 @@ public class Table implements Serializable {
         river.setY(340);
     }
     
-    public Table(Player[] p, Card[] f, Card t, Card r) {
+    public Table(Player[] p, Card[] f, Card t, Card r, int potVal) {
+			pot = potVal;
     		stage = 3;
         //player = p;
 		player = new Player[p.length];
@@ -223,5 +227,13 @@ public class Table implements Serializable {
     
     public int getStage() {
     		return stage;
-    }
+		}
+
+		public void setPot(int pot) {
+			this.pot = pot;
+		}
+
+		public int getPot() {
+			return pot;
+		}
 }

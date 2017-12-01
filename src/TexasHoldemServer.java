@@ -295,7 +295,7 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 				players[i].printout();
 				//toPlayer[i].writeObject(players[i]);//just send the client the entire player
 			}
-			table = new Table(players);
+			table = new Table(players, pot);
 		}
 
 		public void assignSeats() throws IOException {
@@ -341,17 +341,17 @@ public class TexasHoldemServer extends Application implements TexasHoldemConstan
 			flop[1] = d.drawCard();
 			flop[2] = d.drawCard();
 
-			table = new Table(players, flop);
+			table = new Table(players, flop, pot);
 		}
 
 		public void sendTableFlopTurn() throws IOException {
 			turn = d.drawCard();
-			table = new Table(players, flop, turn);
+			table = new Table(players, flop, turn, pot);
 		}
 
 		public void sendTableFlopTurnRiver() throws IOException {
 			river = d.drawCard();
-			table = new Table(players, flop, turn, river);
+			table = new Table(players, flop, turn, river, pot);
 		}
 
 		public boolean isGameOver() {
