@@ -1,10 +1,8 @@
 import java.io.Serializable;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 enum Suit {HEARTS, DIAMONDS, CLUBS, SPADES, CARDBACK}
-
 
 public class Card  implements Serializable, TexasHoldemConstants {
 	private int value;
@@ -62,7 +60,6 @@ public class Card  implements Serializable, TexasHoldemConstants {
 		return this.suit;
 	}
 
-
 	public void setValue(int v) {
 		this.value = v;
 
@@ -75,7 +72,6 @@ public class Card  implements Serializable, TexasHoldemConstants {
 			spriteX = (v * 52) - 52;
 		}
 	}
-
 
 	public int getValue() {
 		return this.value;
