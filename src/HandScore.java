@@ -1,5 +1,4 @@
 //Calculates a players total hand score
-
 public class HandScore implements java.io.Serializable {
 
 	//Players cards and flop, turn, river
@@ -236,6 +235,5 @@ public class HandScore implements java.io.Serializable {
 
 		else
 			return getHighCard();
-
 	}
 }
