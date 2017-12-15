@@ -7,7 +7,6 @@ import java.util.Date;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-//import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
