@@ -1,9 +1,6 @@
 import java.io.IOException;
 import static java.util.concurrent.TimeUnit.*;
-//import java.lang.Object.Enum<TimeUnit>;
 import java.util.concurrent.*;
-//import java.util.concurrent.TimeUnit.*;
-//import java.util.concurrent.TimeUnit;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -18,9 +15,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-
 import javafx.beans.value.*;
-
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
